@@ -2,6 +2,11 @@
 
 Special thanks to [Nick Taylor](https://nickyt.live/) for having me on his stream to chat about this!
 
+![7phhcq](https://github.com/nicknisi/xstate-meme/assets/293805/6e8975bf-e936-44c6-9e99-8569a84508f8)
+
+*(This meme was generated live and on stream!)*
+
+
 This is a simple, [XState](https://xstate.js.org) + [React](https://react.dev) example. It uses the ImgFlip API to generate random memes without the user knowing what meme template will be associated with their captions!
 
 ## ImgFlip API
