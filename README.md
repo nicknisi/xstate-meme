@@ -1,16 +1,27 @@
 # XState Meme
 
-This is a port of the Changelog Quiz Show code base to React/XState from Dojo.
+Special thanks to [Nick Taylor](https://nickyt.live/) for having me on his stream to chat about this!
+
+This is a simple, [XState](https://xstate.js.org) + [React](https://react.dev) example. It uses the ImgFlip API to generate random memes without the user knowing what meme template will be associated with their captions!
+
+## ImgFlip API
+
+To use the ImgFlip API, you'll need an account. Specifically, you'll need to send the username and password in every request to generate a meme. To add this, add a `.env.development` file to the root of the project with the following:
+
+```config
+VITE_MEME_USERNAME='<USERNAME>'
+VITE_MEME_PASSWORD='<PASSWORD>'
+```
 
 ## Getting started
 
-Start the dev server
+Start the dev server on port `3000`.
 
 ```bash
-npm run dev
+npm start
 ```
 
-Start Storybook
+Start Storybook on port `6006`.
 
 ```bash
 npm run storybook
