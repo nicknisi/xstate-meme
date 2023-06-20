@@ -32,3 +32,8 @@ export function createDotSeparatedString(obj: string | Record<string, any>): str
     throw new Error('Object must have exactly one key');
   }
 }
+
+/**
+ * add an artificial delay to an asynchronous call
+ */
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

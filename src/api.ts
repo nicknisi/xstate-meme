@@ -1,3 +1,5 @@
+import { sleep } from './utils';
+
 const API_BASE_URL = 'https://api.imgflip.com';
 const USERNAME = import.meta.env.VITE_MEME_USERNAME;
 const PASSWORD = import.meta.env.VITE_MEME_PASSWORD;
@@ -12,13 +14,26 @@ export interface Meme {
   captions: number;
 }
 
-export async function fetchMemes(): Promise<Meme[]> {
+/**
+ * Fetches memes from the Imgflip API
+ * @param delay - Delay in milliseconds, for dramatic effect
+ */
+export async function fetchMemes(delay = 0): Promise<Meme[]> {
   const response = await fetch(`${API_BASE_URL}/get_memes`);
   const json = await response.json();
+  if (delay) {
+    await sleep(delay);
+  }
   return json.data.memes;
 }
 
-export async function captionMeme(id: string, captions: string[]): Promise<string> {
+/**
+ * Captions a meme from the Imgflip API
+ * @param id - The meme ID
+ * @param captions - The captions to add to the meme
+ * @param delay - Delay in milliseconds, for dramatic effect
+ */
+export async function captionMeme(id: string, captions: string[], delay = 0): Promise<string> {
   const body = new FormData();
   body.append('template_id', id);
   body.append('username', USERNAME);
@@ -35,5 +50,8 @@ export async function captionMeme(id: string, captions: string[]): Promise<strin
     body,
   });
   const json = await response.json();
+  if (delay) {
+    await sleep(delay);
+  }
   return json.data.url;
 }
