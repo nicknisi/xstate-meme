@@ -16,7 +16,7 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    'storybook-xstate-addon/preset',
+    // 'storybook-xstate-addon/preset',
     '@storybook/addon-styling',
   ],
   framework: {
