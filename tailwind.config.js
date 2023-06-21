@@ -5,14 +5,14 @@ module.exports = {
   content: ['index.html', 'src/**/*{.tsx,.ts}'],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
       backgroundSize: {
         full: '100%',
       },
       backgroundImage: {
-        'jsdanger-abstract': 'url(/assets/jsparty-abstract-art.svg)',
-        'gopanic-abstract': 'url(/assets/gotime-abstract-art.svg)',
-        'jsdanger-logo': 'url(/assets/jsdanger-logo_3x.png)',
-        'gopanic-logo': 'url(/assets/gopanic-logo_2x.png)',
+        beef: 'url(/beef_nick.png)',
       },
       textShadow: {
         sm: '0 1px 2px var(--tw-shadow-color)',
@@ -20,8 +20,7 @@ module.exports = {
         lg: '0 8px 16px var(--tw-shadow-color)',
       },
       fontFamily: {
-        sans: ['Pragati Narrow', 'sans-serif'],
-        jsdanger: ['jsdanger', 'serif'],
+        theramin: ['SF Theramin Gothic'],
       },
     },
   },

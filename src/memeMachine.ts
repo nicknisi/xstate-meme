@@ -1,14 +1,15 @@
 import { assign, createMachine } from 'xstate';
-import { Meme, captionMeme, fetchMemes } from './api';
+import { Meme, captionMeme, fetchMemes, getClue } from './api';
 
 interface MemeMachineContext {
   memes: Meme[];
   selectedMeme: Meme | null;
   captions: string[];
+  clue: string | null;
   generatedMemeUrl: string | null;
 }
 
-export type MemeMachineEvent = { type: 'ADD_CAPTION'; value: string };
+export type MemeMachineEvent = { type: 'ADD_CAPTION'; value: string } | { type: 'NEXT' };
 
 export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
   {
@@ -19,14 +20,17 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
       memes: [],
       selectedMeme: null,
       captions: [],
+      clue: null,
       generatedMemeUrl: null,
     },
     initial: 'initial',
     states: {
       initial: {
-        always: 'loadMemes',
+        // always: 'loadMemes',
+        on: { NEXT: 'loadMemes' },
       },
       loadMemes: {
+        tags: ['loading'],
         invoke: {
           id: 'fetchMemes',
           src: 'fetchMemes',
@@ -42,7 +46,26 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
         entry: assign({
           selectedMeme: ({ memes }) => memes[Math.floor(Math.random() * memes.length)],
         }),
-        always: 'enterCaptions',
+        // always: 'enterCaptions',
+        on: { NEXT: 'generateClue' },
+      },
+      generateClue: {
+        tags: ['loading'],
+        invoke: {
+          id: 'generageClue',
+          src: 'getClue',
+          onDone: {
+            target: 'showClue',
+            actions: assign({
+              clue: (_, event) => event.data,
+            }),
+          },
+        },
+      },
+      showClue: {
+        on: {
+          NEXT: 'enterCaptions',
+        },
       },
       enterCaptions: {
         initial: 'entering',
@@ -53,12 +76,11 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
           entering: {
             always: [
               {
-                target: 'done',
-                cond: 'hasEnoughCaptions',
-              },
-              {
                 target: 'enterCaption',
                 cond: 'needsMoreCaptions',
+              },
+              {
+                target: 'done',
               },
             ],
           },
@@ -76,6 +98,7 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
         },
       },
       generateMeme: {
+        tags: ['loading'],
         invoke: {
           id: 'generateMeme',
           src: 'generateMeme',
@@ -96,11 +119,15 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
       hasEnoughCaptions: ({ selectedMeme, captions }) => selectedMeme!.box_count === captions.length,
     },
     services: {
-      fetchMemes: () => fetchMemes,
+      fetchMemes: () => () => fetchMemes(2000),
       generateMeme:
         ({ selectedMeme, captions }) =>
         () =>
-          captionMeme(selectedMeme!.id, captions),
+          captionMeme(selectedMeme!.id, captions, 2000),
+      getClue:
+        ({ selectedMeme }) =>
+        () =>
+          getClue(selectedMeme!.name),
     },
   },
 );

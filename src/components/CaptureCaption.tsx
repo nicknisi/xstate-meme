@@ -9,11 +9,11 @@ export const CaptureCaption = ({
 }) => {
   const [caption, setCaption] = useState('');
   return (
-    <div>
-      <h2 className="text-[250px] text-center">Enter Caption {captionNumber}</h2>
+    <div className="flex flex-col">
+      <h2 className="text-[200px] text-center whitespace-nowrap">Caption {captionNumber}</h2>
       <input
         type="text"
-        className="px-4 bg-slate-900 text-white h-xxl w-full text-[400px]"
+        className="m-32 px-12 self-center bg-slate-900 text-white h-xxl w-[80%] text-[400px] shadow-blue-400 text-shadow-lg border border-gray-800"
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
         onKeyUp={(e) => {
