@@ -80,7 +80,7 @@ interface OpenAIResponse {
  * Given the name of a meme, use OpenAI to generate a clue about what the meme is.
  * @param name - The name of the meme
  */
-export async function getClue(name: string): Promise<string> {
+export async function getClue(name: string, delay = 0): Promise<string> {
   const systemMessage =
     'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Response with only the text. Do not label it as a haiku or limerick.';
 
@@ -112,6 +112,10 @@ export async function getClue(name: string): Promise<string> {
 
   if (!response.ok) {
     throw new Error('Failed to generate clue');
+  }
+
+  if (delay) {
+    await sleep(delay);
   }
 
   const json = (await response.json()) as OpenAIResponse;

@@ -52,7 +52,10 @@ export function App() {
       )}
       {loading && (
         <Centered>
-          <div className="bg-beef w-32 h-32 bg-contain bg-no-repeat animate-spin-slow" />
+          <div>
+            <div className="bg-beef w-32 h-32 bg-contain bg-no-repeat animate-spin-slow" />
+            <div className="pt-4 text-3xl text-white font-theramin">{state}</div>
+          </div>
         </Centered>
       )}
       {state === 'enterCaptions.enterCaption' && (
