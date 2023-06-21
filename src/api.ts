@@ -55,3 +55,65 @@ export async function captionMeme(id: string, captions: string[], delay = 0): Pr
   }
   return json.data.url;
 }
+
+interface OpenAIResponse {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+  choices: Array<{
+    message: {
+      role: string;
+      content: string;
+    };
+    finish_reason: string;
+    index: number;
+  }>;
+}
+
+/**
+ * Given the name of a meme, use OpenAI to generate a clue about what the meme is.
+ * @param name - The name of the meme
+ */
+export async function getClue(name: string): Promise<string> {
+  const systemMessage =
+    'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Response with only the text. Do not label it as a haiku or limerick.';
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      stream: false,
+      messages: [
+        {
+          content: systemMessage,
+          role: 'system',
+        },
+        {
+          content: name,
+          role: 'user',
+        },
+      ],
+      model: 'gpt-3.5-turbo',
+      temperature: 0.8,
+      presence_penalty: 1,
+      max_tokens: 1000,
+      top_p: 1,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to generate clue');
+  }
+
+  const json = (await response.json()) as OpenAIResponse;
+  return json.choices?.[0]?.message?.content ?? 'Clue not found.';
+}
