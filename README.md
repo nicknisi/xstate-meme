@@ -8,7 +8,7 @@ _(This meme was generated live and on stream!)_
 
 This is a simple, [XState](https://xstate.js.org) + [React](https://react.dev) example. It uses the ImgFlip API to generate random memes without the user knowing what meme template will be associated with their captions!
 
-## ImgFlip API
+## ImgFlip & Open AI APIs
 
 To use the ImgFlip API, you'll need an [account](https://imgflip.com/signup). Specifically, you'll need to send the username and password in every request to generate a meme. To add this, add them to a `.env.development` file in the project.
 
