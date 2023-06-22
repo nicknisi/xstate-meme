@@ -1,5 +1,5 @@
 import { createActorContext } from '@xstate/react';
-import { memeMachine } from '../meme';
+import { memeMachine } from '../memeMachine';
 
 const MemeMachineContext = createActorContext(memeMachine);
 

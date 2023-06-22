@@ -51,7 +51,7 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
       generateClue: {
         tags: ['loading'],
         invoke: {
-          id: 'generageClue',
+          id: 'generateClue',
           src: 'getClue',
           onDone: {
             target: 'showClue',
@@ -117,15 +117,15 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
       needsMoreCaptions: ({ selectedMeme, captions }) => selectedMeme!.box_count > captions.length,
     },
     services: {
-      fetchMemes: () => () => fetchMemes(2000),
+      fetchMemes: () => () => fetchMemes(),
       generateMeme:
         ({ selectedMeme, captions }) =>
         () =>
-          captionMeme(selectedMeme!.id, captions, 2000),
+          captionMeme(selectedMeme!.id, captions),
       getClue:
         ({ selectedMeme }) =>
         () =>
-          getClue(selectedMeme!.name, 2000),
+          getClue(selectedMeme!.name),
     },
   },
 );
