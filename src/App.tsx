@@ -10,6 +10,7 @@ export function App() {
   const captionCount = useSelector((state) => state.context.captions.length);
   const image = useSelector((state) => state.context.generatedMemeUrl);
   const loading = useSelector((state) => state.tags.has('loading'));
+  const clue = useSelector((state) => state.context.clue);
   console.log(state);
   return (
     <div className="relative">
@@ -25,6 +26,17 @@ export function App() {
             <p className="text-2xl p-3">Welcome to Meme Quest! Press the button below to get started.</p>
             <button className="p-3 text-lg border-white border rounded-lg" onClick={() => send('NEXT')}>
               START
+            </button>
+          </div>
+        </Centered>
+      )}
+      {state === 'showClue' && (
+        <Centered>
+          <div className="text-center">
+            <p className="text-2xl p-3">Your Clue:</p>
+            <p className="text-5xl p-3 whitespace-pre">{clue}</p>
+            <button className="p-3 text-lg border-white border rounded-lg" onClick={() => send('NEXT')}>
+              NEXT
             </button>
           </div>
         </Centered>
@@ -47,15 +59,3 @@ export function App() {
 }
 
 export default App;
-
-// {state === 'showClue' && clue && (
-//   <Centered>
-//     <div className="text-center">
-//       <p className="text-2xl p-3">Your Clue:</p>
-//       <p className="text-5xl p-3 whitespace-pre">{clue}</p>
-//       <button className="p-3 text-lg border-white border rounded-lg" onClick={() => send('NEXT')}>
-//         ADD CAPTION(S)
-//       </button>
-//     </div>
-//   </Centered>
-// )}

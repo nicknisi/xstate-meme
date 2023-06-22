@@ -82,7 +82,7 @@ interface OpenAIResponse {
  */
 export async function getClue(name: string, delay = 0): Promise<string> {
   const systemMessage =
-    'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Response with only the text. Do not label it as a haiku or limerick.';
+    'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Respond with only the text. Do not label it as a haiku or limerick.';
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
