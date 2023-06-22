@@ -46,25 +46,7 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
         entry: assign({
           selectedMeme: ({ memes }) => memes[Math.floor(Math.random() * memes.length)],
         }),
-        always: 'generateClue',
-      },
-      generateClue: {
-        tags: ['loading'],
-        invoke: {
-          id: 'generateClue',
-          src: 'getClue',
-          onDone: {
-            target: 'showClue',
-            actions: assign({
-              clue: (_, event) => event.data,
-            }),
-          },
-        },
-      },
-      showClue: {
-        on: {
-          NEXT: 'enterCaptions',
-        },
+        always: 'enterCaptions',
       },
       enterCaptions: {
         initial: 'entering',
@@ -117,15 +99,15 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
       needsMoreCaptions: ({ selectedMeme, captions }) => selectedMeme!.box_count > captions.length,
     },
     services: {
-      fetchMemes: () => () => fetchMemes(),
+      fetchMemes: () => () => fetchMemes(2000),
       generateMeme:
         ({ selectedMeme, captions }) =>
         () =>
-          captionMeme(selectedMeme!.id, captions),
+          captionMeme(selectedMeme!.id, captions, 2000),
       getClue:
         ({ selectedMeme }) =>
         () =>
-          getClue(selectedMeme!.name),
+          getClue(selectedMeme!.name, 2000),
     },
   },
 );
