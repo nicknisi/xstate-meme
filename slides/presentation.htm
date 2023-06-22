@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="@@base@@" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, height=device-height, initial-scale=1" />
+    <link rel="stylesheet" href="engine/main.css" />
+    <link rel="stylesheet" href="theme/newyork.css" />
+    <link rel="stylesheet" href="engine/katex/katex.min.css" />
+    <!--<link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />-->
+    <style>
+    :root{
+--logo: ;
+--darkaccent1color: #FFC400;
+--lightaccent1color: #FFC400;
+--accent2: #43aa8b;
+--accent3: #f9c74f;
+--accent4: #90be6d;
+--accent5: #f8961e;
+--accent6: #577590;
+--lighttitletextcolor: #FFC400;
+--darktitletextcolor: #000;
+--lightbodytextcolor: #FFF;
+--darkbodytextcolor: #000;
+--lightbackgroundcolor: #ffffff;
+--darkbackgroundcolor: #000000;
+--bodyfont: inter;
+--titlefont: inter;
+} 
+
+    </style>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="engine/print.css"
+      media="print"
+    />
+  </head>
+
+  <body class="responsive">
+    <div class="reveal">
+      <div class="slides"><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 0.906rem;">
+        <div style=""><h1 id="componentizingapplicationstate">Componentizing Application State</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 0.672rem;">
+        <img src="images/chicken.jpg" class=" position-center-center" style="">
+        <div style=""><h1 id="nicknisi">Nick Nisi</h1>
+
+<ul>
+<li>Staff Software Engineer at C2FO
+
+<ul>
+<li>(A KC Company)</li>
+</ul></li>
+<li>Work remotely from Omaha, NE</li>
+<li>Cohost on JS Party</li>
+<li>Former Emcee
+
+<ul>
+<li>NEJS Conf (2015 - 2019)</li>
+<li>TypeScript Conf US (2018 - 2021)</li>
+</ul></li>
+</ul>
+
+<p><strong>I like JavaScript and TypeScript a lot.</strong></p>
+
+<p><strong>React is cool, too.</strong></p></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light title-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-title" style="width: 100%; font-size: 1rem;">
+        <div style=""><h3 id="yourapplicationstateis">Your application state is</h3>
+
+<h2 id="toocomplex">Too complex</h2></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.672rem;">
+        <div style=""><h1 id="impossiblestates">Impossible States</h1>
+
+<ul>
+<li>State that violates expected behavior of the system</li>
+<li>Cannot occur within the defined constraints and rules of the program</li>
+<li>Often results from programming error or incorrect assumptions</li>
+<li>Leads to unexpected behavior</li>
+</ul>
+
+<h3 id="inotherwordstheyrenonsensestates">In other words, they're nonsense states</h3></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light has-background-image default-container present fit-warning has-light-background fitted" data-background-image="images/capture-20230620210701.gif" data-background-size="contain" data-background-position="right" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.438rem;">
+        <div style=""><h1 id="astoplight">A stop light</h1>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> StopLight = <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> [light, setLight] = useState&lt;(<span class="hljs-keyword">typeof</span> lights)[<span class="hljs-built_in">number</span>]&gt;(<span class="hljs-string">'red'</span>);
+
+  <span class="hljs-keyword">const</span> switchLight = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// ok this is really contrived 🥵</span>
+    <span class="hljs-keyword">const</span> randomLight = lights[<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * lights.length)];
+    setLight(randomLight);
+  };
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"m-16"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{light</span> === <span class="hljs-string">'red'</span> ? '<span class="hljs-attr">bg-red-600</span>' <span class="hljs-attr">:</span> '<span class="hljs-attr">bg-red-100</span>'} /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{light</span> === <span class="hljs-string">'yellow'</span> ? '<span class="hljs-attr">bg-yellow-300</span>' <span class="hljs-attr">:</span> '<span class="hljs-attr">bg-yellow-100</span>'} /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{light</span> === <span class="hljs-string">'green'</span> ? '<span class="hljs-attr">bg-green-600</span>' <span class="hljs-attr">:</span> '<span class="hljs-attr">bg-green-100</span>'} /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{switchLight}</span>&gt;</span>
+        Switch light
+      <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+};
+</code></pre>
+
+<h3 id="green-red-yellow-red-green😱">Green-&gt; Red -&gt; Yellow -&gt; Red -&gt; Green 😱</h3></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.859rem;">
+        <div style=""><h2 id="theproblem">The problem</h2>
+
+<pre><code class="tsx hljs typescript">  <span class="hljs-keyword">const</span> switchLight = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// ok this is really contrived 🥵</span>
+    <span class="hljs-keyword">const</span> randomLight = lights[<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * lights.length)];
+    setLight(randomLight);
+  };
+</code></pre>
+
+<h4 id="randomsettingdoesntmakesenseforastoplight">Random setting doesn't make sense for a stop light</h4></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light has-background-image default-container present has-light-background fitted" data-background-position="right" data-background-image="images/capture-20230620214701.gif" data-background-size="contain" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.859rem;">
+        <div style=""><h2 id="thesolution">The solution</h2>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">const</span> [light, setLight] = useState(<span class="hljs-string">'red'</span>);
+<span class="hljs-keyword">const</span> [arrow, setArrow] = useState(<span class="hljs-literal">undefined</span>);
+
+<span class="hljs-keyword">const</span> lights = [<span class="hljs-string">'red'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'yellow'</span>];
+<span class="hljs-keyword">const</span> [lightIndex, setLightIndex] = useState(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> switchLight = <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> newIndex = (lightIndex + <span class="hljs-number">1</span>) % lights.length;
+  setLightIndex(newIndex);
+  setLight(lights[lightIndex]);
+};
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="butwecankeepgettingmorecomplex">But we can keep getting more complex</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light has-background-image default-container present has-light-background fitted" data-background-position="right" data-background-image="images/capture-20230620215008.gif" data-background-size="contain" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.953rem;">
+        <div style=""><h4 id="gettingmorecomplex">Getting more complex</h4>
+
+<ul>
+<li>add turn arrows?</li>
+<li>Have other factors?
+
+<ul>
+<li>Time of day</li>
+<li>Day of week</li>
+</ul></li>
+</ul>
+
+<h5 id="wecankeepaddingon">We can keep adding on</h5>
+
+<h5 id="butthecomplexitykeepsgrowing">But the complexity keeps growing</h5></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings has-footnotes light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h3 id="💸momoneyvariablesmoproblems1">💸 Mo <del>Money</del> Variables Mo Problems<sup><a href="#fn1" id="fnr1" title="see footnote" class="footnote">1</a></sup></h3>
+
+<pre><code class="tsx hljs typescript">  <span class="hljs-keyword">const</span> [light, setLight] = useState&lt;(<span class="hljs-keyword">typeof</span> lights)[<span class="hljs-built_in">number</span>]&gt;(<span class="hljs-string">'red'</span>);
+  <span class="hljs-keyword">const</span> [arrow, setArrow] = useState&lt;<span class="hljs-string">'green'</span> | <span class="hljs-string">'yellow'</span> | <span class="hljs-literal">undefined</span>&gt;(<span class="hljs-literal">undefined</span>);
+
+  <span class="hljs-keyword">const</span> [lightIndex, setLightIndex] = useState(<span class="hljs-number">0</span>);
+  <span class="hljs-keyword">const</span> switchLight = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> newIndex = (lightIndex + <span class="hljs-number">1</span>) % lights.length;
+    setLightIndex(newIndex);
+    setLight(lights[lightIndex]);
+    setArrow(([<span class="hljs-string">'green'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-literal">undefined</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>)[<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">3</span>)]);
+  };
+</code></pre></div>
+      </div>
+      <div class="footnotes">
+<ol>
+
+<li id="fn1">
+<p>Mo Money can also lead to mo problems. <a href="#fnr1" title="return to article" class="reversefootnote">↩︎</a></p>
+</li>
+
+</ol>
+</div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="tmtowtdi">#TMTOWTDI</h1>
+
+<h4 id="theresmorethanonewaytodoit">There's more than one way to do it</h4></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light section-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-section" style="width: 100%; font-size: 1rem;">
+        <div style="">
+          <h3 id="morewaystohandlestate">More ways to handle state</h3>
+        </div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.485rem;">
+        <div style=""><h1 id="thecontextway">The Context way</h1>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> State {
+  <span class="hljs-attr">light</span>: <span class="hljs-string">'red'</span> | <span class="hljs-string">'green'</span>| <span class="hljs-string">'yellow'</span>;
+  arrow: <span class="hljs-string">'green'</span> | <span class="hljs-string">'yellow'</span> | <span class="hljs-literal">undefined</span>;
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> LightContext = createContext&lt;State | <span class="hljs-literal">null</span>&gt;(<span class="hljs-literal">null</span>);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> LightProvider = <span class="hljs-function">(<span class="hljs-params">{ initialState, children }</span>) =&gt;</span> (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">LightContext.Provider</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{initialState}</span>&gt;</span>
+    {children}
+  <span class="hljs-tag">&lt;/<span class="hljs-name">LightContext.Provider</span>&gt;</span></span>
+);
+</code></pre>
+
+<h2 id="itsagoodideabutitlacksanyrealstructurefordealingwiththestateobject.">It's a good idea, but it lacks any real structure for dealing with the state object.</h2></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h1 id="redux">Redux</h1>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">lightReducer</span>(<span class="hljs-params">state = { light: <span class="hljs-string">'red'</span> }, action</span>) </span>{
+  <span class="hljs-keyword">switch</span> (action.type) {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">'light/change'</span>:
+      <span class="hljs-keyword">return</span> { <span class="hljs-attr">light</span>: action.payload }
+    <span class="hljs-attr">default</span>:
+      <span class="hljs-keyword">return</span> state;
+  }
+}
+
+<span class="hljs-keyword">const</span> store = createStore(lightReducer);
+store.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'light/change'</span>, <span class="hljs-attr">payload</span>: <span class="hljs-string">'yellow'</span> });
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h1 id="whatifwecouldsolveourimpossiblestateproblemanddevelopourstatelikeacomponent🤔">What if we could solve our impossible state problem and develop our state like a Component? 🤔</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="xstate">XState</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h2 id="xstate">XState</h2>
+
+<pre><code class="ts hljs typescript"><span class="hljs-keyword">import</span> { createMachine } <span class="hljs-keyword">from</span> <span class="hljs-string">'xstate'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> lightMachine = createMachine({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'light'</span>,
+  <span class="hljs-attr">initial</span>: <span class="hljs-string">'red'</span>,
+  <span class="hljs-attr">states</span>: {
+    <span class="hljs-attr">red</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'green'</span> },
+    },
+    <span class="hljs-attr">yellow</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'red'</span> },
+    },
+    <span class="hljs-attr">green</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'yellow'</span> },
+    },
+  },
+});
+</code></pre></div>
+        <div style=""><ul>
+<li>Finite states</li>
+<li>Infinite states handled as private context
+
+<ul>
+<li>such as number of jeopardy questions</li>
+</ul></li>
+<li>Side-effects declarative and explicit</li>
+<li>Framework agnostic</li>
+<li>Transitions defined to only work in specific states</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light v-split-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h4 id="statemachinesrendertostatecharts">State machines render to state charts</h4>
+
+<pre><code class="ts hljs typescript"><span class="hljs-keyword">import</span> { createMachine } <span class="hljs-keyword">from</span> <span class="hljs-string">'xstate'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> lightMachine = createMachine({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'light'</span>,
+  <span class="hljs-attr">initial</span>: <span class="hljs-string">'red'</span>,
+  <span class="hljs-attr">states</span>: {
+    <span class="hljs-attr">red</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'green'</span> },
+    },
+    <span class="hljs-attr">yellow</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'red'</span> },
+    },
+    <span class="hljs-attr">green</span>: {
+      <span class="hljs-attr">on</span>: { <span class="hljs-attr">SWITCH</span>: <span class="hljs-string">'yellow'</span> },
+    },
+  },
+});
+</code></pre></div>
+        <img src="images/capture-20230620221912.png" class=" size-contain position-center-center" style="">
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.625rem;">
+        <div style=""><h4 id="letstalkabout">Let's Talk about</h4>
+
+<h2 id="reactcomponents">React Components</h2>
+
+<h5 id="reactmakesiteasytocreatedeclarativeuis">React makes it easy to create declarative UIs</h5>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Game= <span class="hljs-function">() =&gt;</span> (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"game"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Player</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"nick"</span>/&gt;</span>
+    {/* ... */}
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</code></pre>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Player = <span class="hljs-function">(<span class="hljs-params">{ name}: Props</span>) =&gt;</span> (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{</span>`${<span class="hljs-attr">name</span>}<span class="hljs-attr">.bmp</span>`} /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">marquee</span>&gt;</span>{name<span class="hljs-tag">&lt;/<span class="hljs-name">marquee</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.906rem;">
+        <div style=""><h2 id="developinguis">Developing UIs</h2>
+
+<ul>
+<li>Working with declarative UIs is fast and fun
+
+<ul>
+<li>Define inputs (props) and outputs (what to render)</li>
+</ul></li>
+<li>Build a harness page to test the components by themselves without needing to spin up the entire app</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 0.906rem;">
+        <div style=""><h1 id="storybook">Storybook</h1>
+
+<p>Storybook helps build components faster</p>
+
+<ul>
+<li>Build components outside the app, in isolation</li>
+<li>Control inputs</li>
+<li>Streamline UI development and testing</li>
+</ul></div>
+        <img src="images/22632046.png" class=" size-contain position-right-bottom" style="">
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light full-image-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-full-image media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><div class="single-image-wrapper"><img src="images/contestant.gif" class=" position-center-center"></div></div>
+        
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="🤔whatifwecouldtreatourappstatethesameway🤯">🤔 What if we could treat our app state the same way? 🤯</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="secret:wekindofwanttodothisalready🤫">Secret: We kind of want to do this already 🤫</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light full-image-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-full-image media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><div class="single-image-wrapper"><img src="images/miro.png" class=" position-center-center"></div></div>
+        
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light has-background-image title-container present has-light-background fitted" data-background-position="right" data-background-image="images/secret-word.gif" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-title" style="width: 100%; font-size: 1rem;">
+        <div style=""><h2 id="componentizingapplicationstate">Componentizing Application State</h2></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.813rem;">
+        <div style=""><h2 id="componentizingapplicationstate">Componentizing Application State</h2>
+
+<ul>
+<li>Treat the app state as just another component</li>
+<li>Work on the state of the application and verify its flow <strong>BEFORE</strong> the UI exists</li>
+<li>Walk through the flow with non-technical stakeholders</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><h3 id="statemachinesrendertostatecharts">State machines render to state charts</h3>
+
+<ul>
+<li>Visual representation of what's happening</li>
+<li>always up-to-date (sorry, Miro)</li>
+<li>Interactive!</li>
+</ul></div>
+        <img src="images/gameMachine.png" class=" position-center-center" style="">
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.766rem;">
+        <div style=""><h3 id="yourstatecomesacomponent🤯">Your state comes a component 🤯</h3>
+
+<ul>
+<li>Render state charts directly from the actual application flow</li>
+<li>Walk through the state and verify all possible routes from one state to another</li>
+<li>Walk through entire application flow before the UI exists</li>
+<li>Do all of this in Storybook</li>
+</ul>
+
+<pre><code class="bash hljs">npm install storybook-xstate-addon
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="soletsbuildastatemachine">So, let's build a state machine!</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><h4 id="memegame-captionarandommeme">Meme Game - Caption a random meme</h4>
+
+<div class="single-image-wrapper"><img src="images/capture-20230620233918.png" class=" size-contain position-center-center"></div></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light has-background-image default-container present fit-warning has-light-background fitted" data-background-position="right" data-background-image="images/capture-20230621002010.png" data-background-size="contain" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h3 id="aliteralmememachine">A literal <code class="hljs ebnf"><span class="hljs-attribute">meme</span></code> machine</h3>
+
+<pre><code class="ts hljs typescript"><span class="hljs-keyword">import</span> { createMachine } <span class="hljs-keyword">from</span> <span class="hljs-string">'xstate'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> memeMachine = createMachine({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'memeMachine'</span>,
+  <span class="hljs-attr">states</span>: {
+    <span class="hljs-attr">initial</span>: {}, <span class="hljs-comment">// starting state</span>
+    <span class="hljs-attr">loadMemes</span>: {}, <span class="hljs-comment">// fetch popular memes</span>
+    <span class="hljs-attr">selectMeme</span>: {}, <span class="hljs-comment">// randomly select</span>
+    <span class="hljs-attr">enterCaptions</span>: {}, <span class="hljs-comment">// enter captions</span>
+    <span class="hljs-attr">generateMeme</span>: {}, <span class="hljs-comment">// generate meme</span>
+    <span class="hljs-attr">done</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'final'</span> }, <span class="hljs-comment">// show meme</span>
+  },
+});
+
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split" style="width: 100%; font-size: 0.953rem;">
+        <div style=""><h4 id="context-theinfinitestate">Context - The infinite state</h4>
+
+<p>This is the data that you'd like he state machine to store</p>
+
+<ul>
+<li>General/supplemental data about the states</li>
+<li>The data that cannot be codified into the machine itself</li>
+</ul></div>
+        <div style=""><pre><code class="ts hljs typescript"><span class="hljs-keyword">interface</span> MemeMachineContext {
+  <span class="hljs-attr">memes</span>: Meme[];
+  selectedMeme: Meme;
+  captions: <span class="hljs-built_in">string</span>[];
+  generatedMemeUrl: <span class="hljs-built_in">string</span>;
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> memeMachine = createMachine&lt;
+  MemeMachineContext
+&gt;({
+  <span class="hljs-attr">context</span>: { <span class="hljs-comment">/* ... */</span> },
+ <span class="hljs-comment">// ...</span>
+});
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split" style="width: 100%; font-size: 0.906rem;">
+        <div style=""><h2 id="thestates">The States</h2>
+
+<pre><code class="ts hljs typescript">initial: <span class="hljs-string">'initial'</span>,
+<span class="hljs-attr">states</span>: {
+  <span class="hljs-attr">initial</span>: { <span class="hljs-comment">/* ... */</span> },
+  <span class="hljs-attr">loadMemes</span>: { <span class="hljs-comment">/* ... */</span> },
+  <span class="hljs-attr">selectMeme</span>: { <span class="hljs-comment">/* ... */</span> },
+  <span class="hljs-attr">enterCaptions</span>: { <span class="hljs-comment">/* ... */</span> },
+  <span class="hljs-attr">generateMeme</span>: { <span class="hljs-comment">/* ... */</span> },
+  <span class="hljs-attr">done</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'final'</span> },
+},
+</code></pre></div>
+        <div style=""><pre><code class="hljs ada">- Represents <span class="hljs-keyword">all</span> possible states
+</code></pre>
+
+<ul>
+<li>That's the <code class="hljs ebnf"><span class="hljs-attribute">finite</span></code> part 😉</li>
+<li>Define the starting state with <code class="hljs css"><span class="hljs-attribute">initial</span></code></li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><h2 id="events">Events</h2>
+
+<p>All possible actions that can occur while in a state</p>
+
+<ul>
+<li>quietly ignored if not defined</li>
+<li>Finite list of actions</li>
+<li>Full control</li>
+</ul></div>
+        <img src="images/you-didnt-say-the-magic-word-ah-ah.gif" class=" position-left-center" style="">
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.578rem;">
+        <div style=""><h1 id="memeevents">Meme Events</h1>
+
+<pre><code class="ts hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> MemeMachineEvent = 
+ | { <span class="hljs-attr">type</span>: <span class="hljs-string">'ADD_CAPTION'</span>; value: <span class="hljs-built_in">string</span> }
+ | { <span class="hljs-attr">type</span>: <span class="hljs-string">'NEXT'</span> };
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> memeMachine = createMachine&lt;MemeMachineContext, MemeMachineEvent&gt;({
+  <span class="hljs-comment">// ...</span>
+});
+</code></pre>
+
+<ul>
+<li><code class="hljs autoit"><span class="hljs-keyword">NEXT</span></code> - Move to the next state (when defined)</li>
+<li><code class="hljs ebnf"><span class="hljs-attribute">ADD_CAPTION</span></code>- provide a <code class="hljs ebnf"><span class="hljs-attribute">value</span></code> which will be stored in the machine's context</li>
+<li>Events are fully-typed and can have payloads</li>
+<li>Defined as a <strong>Discriminated Union</strong></li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 0.953rem;">
+        <div style=""><h6 id="movingfrominitialtoloadmemes">Moving from <code class="hljs css"><span class="hljs-attribute">initial</span></code> to <code class="hljs ebnf"><span class="hljs-attribute">loadMemes</span></code></h6>
+
+<div class="single-image-wrapper"><img src="images/capture-20230621002111.png" class=" size-contain position-center-center"></div></div>
+        <div style=""><pre><code class="ts hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> memeMachine = createMachine({
+  <span class="hljs-attr">id</span>: <span class="hljs-string">'memeMachine'</span>,
+  <span class="hljs-attr">initial</span>: <span class="hljs-string">'initial'</span>,
+  <span class="hljs-attr">states</span>: {
+    <span class="hljs-attr">initial</span>: {
+      <span class="hljs-attr">on</span>: { 
+        <span class="hljs-attr">NEXT</span>: <span class="hljs-string">'loadMemes'</span>
+      },
+    },
+    <span class="hljs-attr">loadMemes</span>: { <span class="hljs-comment">/* ... */</span> },
+    <span class="hljs-comment">// ...</span>
+  },
+});
+
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light grid-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-grid grid-items-3 media-grid" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h2 id="invokingmachinesfrommachines">Invoking machines from machines</h2>
+
+<h5 id="promisesarefinitestatemachinestoo">Promises are finite state machines, too</h5>
+
+<pre><code class="ts hljs typescript">loadMemes: {
+  <span class="hljs-attr">tags</span>: [<span class="hljs-string">'loading'</span>],
+  <span class="hljs-attr">invoke</span>: {
+    <span class="hljs-attr">id</span>: <span class="hljs-string">'fetchMemes'</span>,
+    <span class="hljs-attr">src</span>: <span class="hljs-string">'fetchMemes'</span>,
+    <span class="hljs-attr">onDone</span>: {
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'selectMeme'</span>,
+      <span class="hljs-attr">actions</span>: assign({
+        <span class="hljs-attr">memes</span>: <span class="hljs-function">(<span class="hljs-params">_, event</span>) =&gt;</span> event.data,
+      }),
+    },
+  },
+},
+</code></pre>
+
+<p><code class="hljs autoit"><span class="hljs-built_in">assign</span></code> sets the meme array in the context.</p></div><img src="images/capture-20230621001222.png" class=" size-contain position-center-center" style=""><img src="images/capture-20230621002153.png" class=" size-contain position-center-center" style="">
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><h5 id="🧐reminder:wehaventcreatedanyui">🧐 Reminder: We haven't created any UI</h5>
+
+<div class="single-image-wrapper"><img src="images/capture-20230621002517.png" class=" size-contain position-center-center"></div>
+
+<h5 id="weredoingeverythinginstorybook">We're doing everything in Storybook</h5></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default media-grid" style="width: 100%; font-size: 0.625rem;">
+        <div style=""><h2 id="selectingarandommeme">Selecting a random meme</h2>
+
+<pre><code class="ts hljs typescript">selectMeme: {
+  <span class="hljs-attr">entry</span>: assign({
+    <span class="hljs-attr">selectedMeme</span>: <span class="hljs-function">(<span class="hljs-params">{ memes }</span>) =&gt;</span> memes[<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * memes.length)],
+  }),
+  <span class="hljs-attr">always</span>: <span class="hljs-string">'enterCaptions'</span>,
+},
+</code></pre>
+
+<div class="single-image-wrapper"><img src="images/capture-20230621002826.png" class=" position-center-center"></div>
+
+<p><code class="hljs ada"><span class="hljs-keyword">entry</span></code> and <code class="hljs ebnf"><span class="hljs-attribute">always</span></code> automate the whole state</p></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split media-grid" style="width: 100%; font-size: 0.813rem;">
+        <div style=""><h1 id="statescanhavetheirownstates😱">States can have their own states 😱</h1>
+
+<ul>
+<li>Allows for sequential or sub-states</li>
+<li><code class="hljs ebnf"><span class="hljs-attribute">onDone</span></code> defined to determine target when sub-machine has finished</li>
+<li></li>
+</ul></div>
+        <div style=""><pre><code class="ts hljs typescript">enterCaptions: {
+  <span class="hljs-attr">initial</span>: <span class="hljs-string">'entering'</span>,
+  <span class="hljs-attr">onDone</span>: {
+    <span class="hljs-attr">target</span>: <span class="hljs-string">'generateMeme'</span>,
+  },
+  <span class="hljs-attr">states</span>: {
+    <span class="hljs-attr">entering</span>: { <span class="hljs-comment">/* ... */</span> },
+    <span class="hljs-attr">enterCaption</span>: { <span class="hljs-comment">/* ... */</span> },
+    <span class="hljs-attr">done</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'final'</span> },
+  },
+},
+</code></pre>
+
+<div class="single-image-wrapper"><img src="images/capture-20230621003359.png" class=" size-contain position-center-center"></div></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light v-split-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-v-split" style="width: 100%; font-size: 1rem;">
+        <div style=""><h6 id="enteringstate-typeguards"><code class="hljs ebnf"><span class="hljs-attribute">entering</span></code> state - Type Guards</h6>
+
+<pre><code class="ts hljs typescript">entering: {
+  <span class="hljs-attr">always</span>: [
+    {
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'enterCaption'</span>,
+      <span class="hljs-attr">cond</span>: <span class="hljs-string">'needsMoreCaptions'</span>,
+    },
+    {
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'done'</span>,
+    },
+  ],
+},
+</code></pre></div>
+        <div style=""><ul>
+<li>Runs the first <code class="hljs aspectj"><span class="hljs-keyword">target</span></code> if the <code class="hljs ebnf"><span class="hljs-attribute">cond</span></code>ition is met</li>
+<li>Falls back to the next <code class="hljs aspectj"><span class="hljs-keyword">target</span></code>, otherwise</li>
+</ul>
+
+<h5 id="inthisstatewereensuringthatifweneedmorecaptionsweaskforthembeforemovingon">In this state, we're ensuring that if we need more captions, we ask for them before moving on</h5></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h3 id="enteringcaptions✍️">Entering Captions ✍️</h3>
+
+<pre><code class="ts hljs typescript">enterCaption: {
+  <span class="hljs-attr">on</span>: {
+    <span class="hljs-attr">ADD_CAPTION</span>: {
+      <span class="hljs-attr">actions</span>: assign({
+        <span class="hljs-attr">captions</span>: <span class="hljs-function">(<span class="hljs-params">{ captions }, event</span>) =&gt;</span> ([...captions, event.value]),
+      }),
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'entering'</span>,
+    },
+  },
+},
+</code></pre>
+
+<h6 id="targettheenteringstatetoloopbackandseeifweneedmorecaptions">Target the <code class="hljs ebnf"><span class="hljs-attribute">entering</span></code> state to loop back and see if we need more captions</h6></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><div class="single-image-wrapper"><img src="images/capture-20230621004129.png" class=" size-contain position-center-center"></div>
+
+<p>No React but look at my "component" 😉</p></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><h6 id="didimentionthisstatechartisinteractive">Did I mention this state chart is interactive?</h6>
+
+<div class="single-image-wrapper"><img src="images/capture-20230621005147.gif" class=" size-contain position-center-center"></div></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h2 id="generatingthememe">Generating the meme</h2>
+
+<pre><code class="ts hljs typescript">generateMeme: {
+  <span class="hljs-attr">tags</span>: [<span class="hljs-string">'loading'</span>],
+  <span class="hljs-attr">invoke</span>: {
+    <span class="hljs-attr">id</span>: <span class="hljs-string">'generateMeme'</span>,
+    <span class="hljs-attr">src</span>: <span class="hljs-string">'generateMeme'</span>,
+    <span class="hljs-attr">onDone</span>: {
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'done'</span>,
+      <span class="hljs-attr">actions</span>: assign({
+        <span class="hljs-attr">generatedMemeUrl</span>: <span class="hljs-function">(<span class="hljs-params">_, event</span>) =&gt;</span> event.data,
+      }),
+    },
+  },
+},
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.531rem;">
+        <div style=""><h1 id="definingservicesandguards">Defining services and guards</h1>
+
+<pre><code class="ts hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> memeMachine = createMachine(
+  {<span class="hljs-regexp">/ * ... */</span> },
+  {
+    <span class="hljs-attr">guards</span>: {
+      <span class="hljs-attr">needsMoreCaptions</span>: <span class="hljs-function">(<span class="hljs-params">{ selectedMeme, captions }</span>) =&gt;</span> selectedMeme!.box_count &gt; captions.length,
+    },
+    <span class="hljs-attr">services</span>: {
+      <span class="hljs-attr">fetchMemes</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-function">() =&gt;</span> fetchMemes(),
+      <span class="hljs-attr">generateMeme</span>:
+        <span class="hljs-function">(<span class="hljs-params">{ selectedMeme, captions }</span>) =&gt;</span>
+        <span class="hljs-function">() =&gt;</span>
+          captionMeme(selectedMeme!.id, captions),
+    },
+  },
+);
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="letsputitalltogether">Let's put it all together</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light full-image-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-full-image media-grid" style="width: 100%; font-size: 1rem;">
+        <div style=""><div class="single-image-wrapper"><video controls="" class=" position-center-center" data-paused-by-reveal=""><source src="images/capture-20230621005943.mp4"></video></div></div>
+        
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+</section><section class="variable-size-headings light title-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-title" style="width: 100%; font-size: 1rem;">
+        <div style=""><h3 id="buthowdoweusethisin">But how do we use this in</h3>
+
+<h2 id="react">React</h2></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><pre><code class="tsx hljs typescript"><span class="hljs-keyword">import</span> { createActorContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'@xstate/react'</span>;
+<span class="hljs-keyword">import</span> { memeMachine } <span class="hljs-keyword">from</span> <span class="hljs-string">'../memeMachine'</span>;
+
+<span class="hljs-comment">// Create an Actor context </span>
+<span class="hljs-keyword">const</span> MemeMachineContext = createActorContext(memeMachine);
+
+<span class="hljs-comment">// export a Provider component</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> MachineProvider = MemeMachineContext.Provider;
+
+<span class="hljs-comment">// export useActor and useContext hooks to access</span>
+<span class="hljs-comment">// the machine's state and send it messages</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> useActor = MemeMachineContext.useActor;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> useSelector = MemeMachineContext.useSelector;
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.813rem;">
+        <div style=""><h2 id="useactor"><code class="hljs ebnf"><span class="hljs-attribute">useActor</span></code></h2>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-keyword">const</span> [state, send] = useActor();
+send({
+  <span class="hljs-attr">type</span>: <span class="hljs-string">'ADD_CAPTION'</span>,
+  <span class="hljs-attr">value</span>: <span class="hljs-string">'KCDC Rocks 😎'</span> 
+});
+</code></pre>
+
+<ul>
+<li><code class="hljs pf"><span class="hljs-keyword">state</span></code> is the current state of the machine</li>
+<li><code class="hljs autoit"><span class="hljs-built_in">send</span></code> is how your React code can communicate with the machine</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present fit-warning has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.719rem;">
+        <div style=""><h2 id="useselector"><code class="hljs ebnf"><span class="hljs-attribute">useSelector</span></code></h2>
+
+<pre><code class="tsx hljs typescript"><span class="hljs-comment">// The number of captions we currently have in state</span>
+<span class="hljs-keyword">const</span> captionCount = useSelector(<span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> state.context.captions.length);
+<span class="hljs-comment">// Whether the current state has a `loading` tag</span>
+<span class="hljs-keyword">const</span> loading = useSelector(<span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> state.tags.has(<span class="hljs-string">'loading'</span>));
+</code></pre>
+
+<ul>
+<li>Returns the selected value from a snapshot of an actor</li>
+<li>Will only cause a pre-render if the selected value changes</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="letsaddanewstate">Let's add a new state</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.906rem;">
+        <div style=""><pre><code class="ts hljs typescript">generateClue: {
+  <span class="hljs-attr">tags</span>: [<span class="hljs-string">'loading'</span>],
+  <span class="hljs-attr">invoke</span>: {
+    <span class="hljs-attr">id</span>: <span class="hljs-string">'generateClue'</span>,
+    <span class="hljs-attr">src</span>: <span class="hljs-string">'getClue'</span>,
+    <span class="hljs-attr">onDone</span>: {
+      <span class="hljs-attr">target</span>: <span class="hljs-string">'showClue'</span>,
+      <span class="hljs-attr">actions</span>: assign({
+        <span class="hljs-attr">clue</span>: <span class="hljs-function">(<span class="hljs-params">_, event</span>) =&gt;</span> event.data,
+      }),
+    },
+  },
+},
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.813rem;">
+        <div style=""><pre><code class="tsx hljs typescript">{state === <span class="hljs-string">'showClue'</span> &amp;&amp; clue &amp;&amp; (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Centered</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"text-center"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"text-2xl p-3"</span>&gt;</span>Your Clue:<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"text-5xl p-3 whitespace-pre"</span>&gt;</span>{clue}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"p-3 text-lg border-white border rounded-lg"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> send('NEXT')}&gt;
+        ADD CAPTION(S)
+      <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">Centered</span>&gt;</span></span>
+)}
+</code></pre></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="butnicksurelytheremustbedownsides">But Nick, surely there must be downsides?</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light cover-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-cover" style="width: 100%; font-size: 1rem;">
+        <div style=""><h1 id="yes">YES</h1></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light default-container present has-light-background fitted" data-updated="true" style="display: grid;">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 0.859rem;">
+        <div style=""><h4 id="lessonsfromayearofxstate">Lessons from a year of XState</h4>
+
+<ul>
+<li>😰 Working on a large 'JSON object' can be tedious</li>
+<li>😮‍💨 Terminology</li>
+<li>💀 Overkill in some cases</li>
+<li><p>⚛️ Can be difficult to interact with React</p>
+<strong>XState 5 is now in beta and addresses a lot!</strong></li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section><section class="variable-size-headings light has-background-image default-container present has-light-background fitted" data-background-image="images/giphy (2).gif" data-state="background-filter-darken background-opacity-70" style="display: grid;" data-updated="true">
+
+      <div class="header"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      <div class="layout-default" style="width: 100%; font-size: 1rem;">
+        <div style=""><h2 id="thanks">Thanks!</h2>
+
+<ul>
+<li>https://vim.dad</li>
+<li>github.com/nicknisi/xstate-meme</li>
+<li>https://xstate.js.org</li>
+<li>https://storybook.js.org</li>
+</ul></div>
+      </div>
+      <div class="footnotes"></div>
+      <div class="footer"><div class="leading"></div><div class="middle"></div><div class="trailing"></div></div>
+      
+</section></div>
+    </div>
+    <script src="engine/index.js"></script>
+    <!--<script src="engine/d3v4.min.js" charset="utf-8"></script>
+    <script src="engine/charts.min.js" charset="utf-8"></script>
+    <script src="engine/billboard.min.js"></script>-->
+    <script src="engine/pptxgen.min.js"></script>
+                                                   <script src="engine/pfill.js"></script>
+    <script src="engine/published.js"></script>
+
+    <script>
+      Reveal.configure({
+        progress: true,
+        keyboard: true,
+        dependencies: [
+          {
+            src: "engine/highlight.js",
+            sync: true,
+            callback: function () {
+              hljs.initHighlightingOnLoad();
+            },
+          },
+        ],
+      });
+    </script>
+  </body>
+</html>

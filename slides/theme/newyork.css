@@ -1,0 +1,39 @@
+:root {
+  --code-background: rgba(0, 0, 0, 0.03);
+  --code-border: rgba(0, 0, 0, 0.05);
+  --code-text: #303030;
+  --code-comment: #9ea4aa;
+  --code-type: #9f3b4f;
+  --code-include: #8c3a94;
+  --code-string: #6959a1;
+  --code-class-name: #4968a8;
+  --code-numbers: #a58a2a;
+  --code-variables: #4689cc;
+  --code-functions: #cf5da8;
+  --code-literal: #db651c;
+
+  --dark-code-background: rgba(255, 255, 255, 0.06);
+  --dark-code-border: rgba(255, 255, 255, 0.08);
+  --dark-code-text: #F7F7F7;
+  --dark-code-comment: #80878D;
+  --dark-code-type: #EF98A8;
+  --dark-code-include: #C596C9;
+  --dark-code-string: #A59CC7;
+  --dark-code-class-name: #94A5CB;
+  --dark-code-numbers: #E8D670;
+  --dark-code-variables: #77B5E3;
+  --dark-code-functions: #DF8DC0;
+  --dark-code-literal: #F6B99A;
+
+}
+
+@font-face {
+  font-family: 'inter';
+  src: url(Inter.var.woff2) format('woff2');
+}
+
+.backgrounds .light.cover-container,
+.backgrounds .light.title-container,
+.backgrounds .light.section-container{
+    background-color : var(--lightaccent1color);
+}

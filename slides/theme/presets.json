@@ -1,0 +1,25 @@
+{
+  "Presets": [
+    {
+      "Name": "Default",
+      "TitleFont": "inter",
+      "BodyFont": "inter",
+      "Appearance" : "light",
+      "DarkBodyTextColor": "#000",
+      "LightBodyTextColor": "#FFF",
+      "DarkTitleTextColor": "#000",
+      "LightTitleTextColor": "#FFC400",
+      "DarkBackgroundColor": "#000000",
+      "LightBackgroundColor": "#ffffff",
+      "DarkAccent1": "#FFC400",
+      "LightAccent1": "#FFC400",
+      "Accent1": "#f94144",
+      "Accent2": "#43aa8b",
+      "Accent3": "#f9c74f",
+      "Accent4": "#90be6d",
+      "Accent5": "#f8961e",
+      "Accent6": "#577590"
+    },
+
+  ]
+}
