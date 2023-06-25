@@ -10,6 +10,7 @@ This project started its life as an example for [Nick Taylor's](https://nickyt.l
 Special thanks to the [KCDC team](https://kcdc.info) for the opportunity to speak!
 
 ![7q8apz](https://github.com/nicknisi/xstate-meme/assets/293805/0e9d1d02-7605-454a-a6d6-0e594139cad3)
+
 _(This meme was generated live and on stage at KCDC!)_
 
 
