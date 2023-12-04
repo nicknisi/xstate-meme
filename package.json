@@ -14,11 +14,11 @@
     "prettier": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@xstate/react": "3.2.2",
-    "clsx": "1.2.1",
+    "@xstate/react": "4.0.0",
+    "clsx": "2.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "xstate": "4.37.2"
+    "xstate": "5.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.23.5",

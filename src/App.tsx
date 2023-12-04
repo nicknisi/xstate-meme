@@ -1,11 +1,11 @@
-import { useActor, useSelector } from './components/MachineProvider.js';
+import { useActorRef, useSelector } from './components/MachineProvider.js';
 import { createDotSeparatedString } from './utils.js';
 import { CaptureCaption } from './components/CaptureCaption.js';
 import { Centered } from './components/Centered.js';
 import { LoadingIndicator } from './components/LoadingIndicator.js';
 
 export function App() {
-  const [, send] = useActor();
+  const { send } = useActorRef();
   const state = useSelector((state) => createDotSeparatedString(state.value));
   const captionCount = useSelector((state) => state.context.captions.length);
   const image = useSelector((state) => state.context.generatedMemeUrl);
@@ -24,7 +24,11 @@ export function App() {
         <Centered>
           <div className="text-center">
             <p className="text-2xl p-3">Welcome to Meme Quest! Press the button below to get started.</p>
-            <button className="p-3 text-lg border-white border rounded-lg" onClick={() => send('NEXT')}>
+            <button
+              type="button"
+              className="p-3 text-lg border-white border rounded-lg"
+              onClick={() => send({ type: 'NEXT' })}
+            >
               START
             </button>
           </div>
@@ -35,7 +39,11 @@ export function App() {
           <div className="text-center">
             <p className="text-2xl p-3">Your Clue:</p>
             <p className="text-5xl p-3 whitespace-pre">{clue}</p>
-            <button className="p-3 text-lg border-white border rounded-lg" onClick={() => send('NEXT')}>
+            <button
+              type="button"
+              className="p-3 text-lg border-white border rounded-lg"
+              onClick={() => send({ type: 'NEXT' })}
+            >
               NEXT
             </button>
           </div>

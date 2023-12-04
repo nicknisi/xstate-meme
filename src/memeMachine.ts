@@ -1,4 +1,4 @@
-import { assign, createMachine } from 'xstate';
+import { assign, createMachine, fromPromise } from 'xstate';
 import { Meme, captionMeme, fetchMemes, getClue } from './api.js';
 
 interface MemeMachineContext {
@@ -11,11 +11,13 @@ interface MemeMachineContext {
 
 export type MemeMachineEvent = { type: 'ADD_CAPTION'; value: string } | { type: 'NEXT' };
 
-export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
+export const memeMachine = createMachine(
   {
+    types: {} as {
+      context: MemeMachineContext;
+      events: MemeMachineEvent;
+    },
     id: 'memeMachine',
-    predictableActionArguments: true,
-    preserveActionOrder: true,
     context: {
       memes: [],
       selectedMeme: null,
@@ -37,14 +39,14 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
           onDone: {
             target: 'selectMeme',
             actions: assign({
-              memes: (_, event) => event.data,
+              memes: ({ event }) => event.output,
             }),
           },
         },
       },
       selectMeme: {
         entry: assign({
-          selectedMeme: ({ memes }) => memes[Math.floor(Math.random() * memes.length)],
+          selectedMeme: ({ context: { memes } }) => memes[Math.floor(Math.random() * memes.length)],
         }),
         always: 'getClue',
       },
@@ -53,10 +55,11 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
         invoke: {
           id: 'getClue',
           src: 'getClue',
+          input: ({ context: { selectedMeme } }) => ({ selectedMeme }),
           onDone: {
             target: 'showClue',
             actions: assign({
-              clue: (_, event) => event.data,
+              clue: ({ event }) => event.output,
             }),
           },
         },
@@ -78,7 +81,7 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
             always: [
               {
                 target: 'enterCaption',
-                cond: 'needsMoreCaptions',
+                guard: 'needsMoreCaptions',
               },
               {
                 target: 'done',
@@ -89,7 +92,7 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
             on: {
               ADD_CAPTION: {
                 actions: assign({
-                  captions: ({ captions }, event) => captions.concat(event.value ?? 'DEFAULT'),
+                  captions: ({ context: { captions }, event }) => captions.concat(event.value ?? 'DEFAULT'),
                 }),
                 target: 'entering',
               },
@@ -103,10 +106,11 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
         invoke: {
           id: 'generateMeme',
           src: 'generateMeme',
+          input: ({ context: { selectedMeme, captions } }) => ({ selectedMeme, captions }),
           onDone: {
             target: 'done',
             actions: assign({
-              generatedMemeUrl: (_, event) => event.data,
+              generatedMemeUrl: ({ event }) => event.output,
             }),
           },
         },
@@ -116,18 +120,15 @@ export const memeMachine = createMachine<MemeMachineContext, MemeMachineEvent>(
   },
   {
     guards: {
-      needsMoreCaptions: ({ selectedMeme, captions }) => selectedMeme!.box_count > captions.length,
+      needsMoreCaptions: ({ context: { selectedMeme, captions } }) => selectedMeme!.box_count > captions.length,
     },
-    services: {
-      fetchMemes: () => () => fetchMemes(2000),
-      generateMeme:
-        ({ selectedMeme, captions }) =>
-        () =>
+    actors: {
+      fetchMemes: fromPromise(() => fetchMemes(2000)),
+      generateMeme: fromPromise(
+        async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) =>
           captionMeme(selectedMeme!.id, captions, 2000),
-      getClue:
-        ({ selectedMeme }) =>
-        () =>
-          getClue(selectedMeme!.name, 2000),
+      ),
+      getClue: fromPromise(({ input }: { input: { selectedMeme: Meme } }) => getClue(input.selectedMeme.name, 2000)),
     },
   },
 );

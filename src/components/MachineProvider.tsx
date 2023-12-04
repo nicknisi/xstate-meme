@@ -5,5 +5,5 @@ const MemeMachineContext = createActorContext(memeMachine);
 
 export const MachineProvider = MemeMachineContext.Provider;
 
-export const useActor = MemeMachineContext.useActor;
+export const useActorRef = MemeMachineContext.useActorRef;
 export const useSelector = MemeMachineContext.useSelector;

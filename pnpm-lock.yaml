@@ -6,11 +6,11 @@ settings:
 
 dependencies:
   '@xstate/react':
-    specifier: 3.2.2
-    version: 3.2.2(@types/react@18.2.41)(react@18.2.0)(xstate@4.37.2)
+    specifier: 4.0.0
+    version: 4.0.0(@types/react@18.2.41)(react@18.2.0)(xstate@5.0.0)
   clsx:
-    specifier: 1.2.1
-    version: 1.2.1
+    specifier: 2.0.0
+    version: 2.0.0
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -18,8 +18,8 @@ dependencies:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
   xstate:
-    specifier: 4.37.2
-    version: 4.37.2
+    specifier: 5.0.0
+    version: 5.0.0
 
 devDependencies:
   '@babel/core':
@@ -57,7 +57,7 @@ devDependencies:
     version: 4.2.0(vite@5.0.4)
   '@xstate/inspect':
     specifier: 0.8.0
-    version: 0.8.0(ws@8.14.2)(xstate@4.37.2)
+    version: 0.8.0(ws@8.14.2)(xstate@5.0.0)
   autoprefixer:
     specifier: 10.4.16
     version: 10.4.16(postcss@8.4.32)
@@ -78,7 +78,7 @@ devDependencies:
     version: 7.6.3
   storybook-xstate-addon:
     specifier: 2.3.8
-    version: 2.3.8(@storybook/addons@7.6.3)(@storybook/api@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/theming@7.6.3)(@xstate/inspect@0.8.0)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(storybook@7.6.3)(xstate@4.37.2)
+    version: 2.3.8(@storybook/addons@7.6.3)(@storybook/api@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/theming@7.6.3)(@xstate/inspect@0.8.0)(@xstate/react@4.0.0)(react-dom@18.2.0)(react@18.2.0)(storybook@7.6.3)(xstate@5.0.0)
   tailwindcss:
     specifier: 3.3.5
     version: 3.3.5
@@ -3893,7 +3893,7 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
-  /@xstate/inspect@0.8.0(ws@8.14.2)(xstate@4.37.2):
+  /@xstate/inspect@0.8.0(ws@8.14.2)(xstate@5.0.0):
     resolution: {integrity: sha512-wSkFeOnp+7dhn+zTThO0M4D2FEqZN9lGIWowJu5JLa2ojjtlzRwK8SkjcHZ4rLX8VnMev7kGjgQLrGs8kxy+hw==}
     peerDependencies:
       '@types/ws': ^8.0.0
@@ -3905,25 +3905,22 @@ packages:
     dependencies:
       fast-safe-stringify: 2.1.1
       ws: 8.14.2
-      xstate: 4.37.2
+      xstate: 5.0.0
     dev: true
 
-  /@xstate/react@3.2.2(@types/react@18.2.41)(react@18.2.0)(xstate@4.37.2):
-    resolution: {integrity: sha512-feghXWLedyq8JeL13yda3XnHPZKwYDN5HPBLykpLeuNpr9178tQd2/3d0NrH6gSd0sG5mLuLeuD+ck830fgzLQ==}
+  /@xstate/react@4.0.0(@types/react@18.2.41)(react@18.2.0)(xstate@5.0.0):
+    resolution: {integrity: sha512-+vINFFBX5JWed/xD2/kNZ0SYbWyeSHgwsJkdLBeHp+Rnbf7QSLWxs3zAXcWPBdPuAgF/suo4E0GaiGZzaxumMQ==}
     peerDependencies:
-      '@xstate/fsm': ^2.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      xstate: ^4.37.2
+      xstate: ^5.0.0
     peerDependenciesMeta:
-      '@xstate/fsm':
-        optional: true
       xstate:
         optional: true
     dependencies:
       react: 18.2.0
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.41)(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
-      xstate: 4.37.2
+      xstate: 5.0.0
     transitivePeerDependencies:
       - '@types/react'
 
@@ -4532,8 +4529,8 @@ packages:
     engines: {node: '>=0.8'}
     dev: true
 
-  /clsx@1.2.1:
-    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+  /clsx@2.0.0:
+    resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
     engines: {node: '>=6'}
     dev: false
 
@@ -7797,7 +7794,7 @@ packages:
     resolution: {integrity: sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==}
     dev: true
 
-  /storybook-xstate-addon@2.3.8(@storybook/addons@7.6.3)(@storybook/api@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/theming@7.6.3)(@xstate/inspect@0.8.0)(@xstate/react@3.2.2)(react-dom@18.2.0)(react@18.2.0)(storybook@7.6.3)(xstate@4.37.2):
+  /storybook-xstate-addon@2.3.8(@storybook/addons@7.6.3)(@storybook/api@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/theming@7.6.3)(@xstate/inspect@0.8.0)(@xstate/react@4.0.0)(react-dom@18.2.0)(react@18.2.0)(storybook@7.6.3)(xstate@5.0.0):
     resolution: {integrity: sha512-nGCmvmKTUkDgklUgGcULpo2hnd3tEoyLa2Q4xjijuuJmk5n2/ckeG6hrt4jRFUFl8RK9S7GvXgQ3TfVM2qmqbQ==}
     peerDependencies:
       '@storybook/addons': '>=6.4.19 <8'
@@ -7817,12 +7814,12 @@ packages:
       '@storybook/components': 7.6.3(@types/react-dom@18.2.17)(@types/react@18.2.41)(react-dom@18.2.0)(react@18.2.0)
       '@storybook/core-events': 7.6.3
       '@storybook/theming': 7.6.3(react-dom@18.2.0)(react@18.2.0)
-      '@xstate/inspect': 0.8.0(ws@8.14.2)(xstate@4.37.2)
-      '@xstate/react': 3.2.2(@types/react@18.2.41)(react@18.2.0)(xstate@4.37.2)
+      '@xstate/inspect': 0.8.0(ws@8.14.2)(xstate@5.0.0)
+      '@xstate/react': 4.0.0(@types/react@18.2.41)(react@18.2.0)(xstate@5.0.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       storybook: 7.6.3
-      xstate: 4.37.2
+      xstate: 5.0.0
     dev: true
 
   /storybook@7.6.3:
@@ -8612,8 +8609,8 @@ packages:
         optional: true
     dev: true
 
-  /xstate@4.37.2:
-    resolution: {integrity: sha512-Qm337O49CRTZ3PRyRuK6b+kvI+D3JGxXIZCTul+xEsyFCVkTFDt5jixaL1nBWcUBcaTQ9um/5CRGVItPi7fveg==}
+  /xstate@5.0.0:
+    resolution: {integrity: sha512-FIKtRv8eQB+3dRLdnzdxlQ/sRjcqiN31JaskeHbcyRBaEvcwcjbakYZ5PVV9v4K0szbe793SUN/04J6/g5GrEA==}
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
