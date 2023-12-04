@@ -102,11 +102,12 @@ export async function getClue(name: string, delay = 0): Promise<string> {
           role: 'user',
         },
       ],
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-1106-preview',
       temperature: 0.8,
-      presence_penalty: 1,
       max_tokens: 1000,
       top_p: 1,
+      presence_penalty: 0,
+      frequency_penalty: 0,
     }),
   });
 
