@@ -1,8 +1,8 @@
-import { useActor, useSelector } from './components/MachineProvider';
-import { createDotSeparatedString } from './utils';
-import { CaptureCaption } from './components/CaptureCaption';
-import { Centered } from './components/Centered';
-import { LoadingIndicator } from './components/LoadingIndicator';
+import { useActor, useSelector } from './components/MachineProvider.js';
+import { createDotSeparatedString } from './utils.js';
+import { CaptureCaption } from './components/CaptureCaption.js';
+import { Centered } from './components/Centered.js';
+import { LoadingIndicator } from './components/LoadingIndicator.js';
 
 export function App() {
   const [, send] = useActor();

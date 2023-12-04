@@ -1,4 +1,4 @@
-import { sleep } from './utils';
+import { sleep } from './utils.js';
 
 const API_BASE_URL = 'https://api.imgflip.com';
 const USERNAME = import.meta.env.VITE_MEME_USERNAME;

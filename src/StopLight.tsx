@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 
 const lights = ['red', 'green', 'yellow'] as const;
 export const StopLight = () => {

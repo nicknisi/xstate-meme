@@ -1,4 +1,4 @@
-import { Centered } from './Centered';
+import { Centered } from './Centered.js';
 
 export const LoadingIndicator = ({ state }: { state?: string }) => {
   return (

@@ -1,5 +1,5 @@
 import { assign, createMachine } from 'xstate';
-import { Meme, captionMeme, fetchMemes, getClue } from './api';
+import { Meme, captionMeme, fetchMemes, getClue } from './api.js';
 
 interface MemeMachineContext {
   memes: Meme[];
