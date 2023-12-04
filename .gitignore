@@ -3,3 +3,4 @@ _build/
 output/
 .cert/
 .env.development
+dist/
