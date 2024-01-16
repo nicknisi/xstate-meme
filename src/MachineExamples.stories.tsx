@@ -12,8 +12,12 @@ type Story = StoryObj<typeof RenderMachine>;
 
 type LightEvent = { type: 'SWITCH' };
 
-const lightMachine = createMachine<undefined, LightEvent>({
+const lightMachine = createMachine({
 	id: 'light',
+	types: {} as {
+		context: undefined;
+		events: LightEvent;
+	},
 	initial: 'red',
 	states: {
 		red: {
