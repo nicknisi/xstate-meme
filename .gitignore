@@ -4,3 +4,4 @@ output/
 .cert/
 .env.development
 dist/
+tsconfig.tsbuildinfo
