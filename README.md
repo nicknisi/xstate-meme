@@ -13,7 +13,6 @@ Special thanks to the [KCDC team](https://kcdc.info) for the opportunity to spea
 
 _(This meme was generated live and on stage at KCDC!)_
 
-
 ## Nick Taylor Stream
 
 - [Stream link (YouTube)](https://www.youtube.com/watch?v=F8EGZCcEOn8)

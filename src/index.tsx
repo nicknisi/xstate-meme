@@ -7,11 +7,11 @@ import { MachineProvider } from './components/MachineProvider.js';
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-  <StrictMode>
-    <Suspense fallback={'Loading...'}>
-      <MachineProvider>
-        <App />
-      </MachineProvider>
-    </Suspense>
-  </StrictMode>,
+	<StrictMode>
+		<Suspense fallback={'Loading...'}>
+			<MachineProvider>
+				<App />
+			</MachineProvider>
+		</Suspense>
+	</StrictMode>,
 );
