@@ -1,7 +1,7 @@
 import { assign, createMachine, fromPromise } from 'xstate';
 import { Meme, captionMeme, fetchMemes, getClue } from './api.js';
 
-interface MemeMachineContext {
+export interface MemeMachineContext {
 	memes: Meme[];
 	selectedMeme: Meme | null;
 	captions: string[];
@@ -30,6 +30,7 @@ export const memeMachine = createMachine(
 			initial: {
 				// always: 'loadMemes',
 				on: { NEXT: 'loadMemes' },
+				entry: () => console.log('initial'),
 			},
 			loadMemes: {
 				tags: ['loading'],
