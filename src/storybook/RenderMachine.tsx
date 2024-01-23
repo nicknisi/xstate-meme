@@ -1,7 +1,6 @@
 import { createBrowserInspector } from '@statelyai/inspect';
-import { useMachine } from '@xstate/react';
-import { useMemo, useRef, useState, useEffect, RefObject } from 'react';
-import { InspectionEvent, Observer, type StateMachine, createActor, Actor, ActorLogicFrom } from 'xstate';
+import { RefObject, useEffect, useRef, useState } from 'react';
+import { InspectionEvent, Observer, createActor, type StateMachine } from 'xstate';
 
 type AnyStateMachine = StateMachine<any, any, any, any, any, any, any, any, any, any, any>;
 
@@ -17,7 +16,6 @@ export interface RenderMachineProps<T extends AnyStateMachine = AnyStateMachine>
 export function useRendererOnRef<T>(initial: T | null): [RefObject<T>, T | null] {
 	const ref = useRef<T>(initial);
 	const [state, setState] = useState<T | null>(ref.current);
-
 	useEffect(() => {
 		setState(ref.current);
 	}, [ref.current]);
@@ -25,7 +23,10 @@ export function useRendererOnRef<T>(initial: T | null): [RefObject<T>, T | null]
 	return [ref, state] as const;
 }
 
-function useInspectedMachine<T extends AnyStateMachine>(machine: T, iframe: HTMLIFrameElement | null) {
+/**
+ * Create a new actor and inspector for the given machine.
+ */
+function useInspectedActor<T extends AnyStateMachine>(machine: T, iframe: HTMLIFrameElement | null) {
 	const [actor, setActor] = useState<ReturnType<typeof createActor> | null>(null);
 	const [inspector, setInspector] = useState<ReturnType<typeof createBrowserInspector> | null>(null);
 	useEffect(() => {
@@ -46,7 +47,7 @@ function useInspectedMachine<T extends AnyStateMachine>(machine: T, iframe: HTML
 
 export default function RenderMachine({ machine }: RenderMachineProps) {
 	const [ref, iframe] = useRendererOnRef<HTMLIFrameElement>(null);
-	const { actor, inspector } = useInspectedMachine(machine, iframe);
+	const { actor, inspector } = useInspectedActor(machine, iframe);
 
 	useEffect(() => {
 		if (actor) {
@@ -57,8 +58,8 @@ export default function RenderMachine({ machine }: RenderMachineProps) {
 	console.log('RenderMachines', machine, actor, inspector);
 
 	return (
-		<div>
-			<iframe style={{ width: '100%', height: '100%', border: 0 }} ref={ref} />
+		<div className="h-full w-full">
+			<iframe className="h-full w-full" ref={ref} />
 		</div>
 	);
 }
