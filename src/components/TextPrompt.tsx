@@ -5,7 +5,7 @@ export interface TextPromptProps {
 	onCapture: (caption: string) => void;
 }
 
-export const TextPrompt = ({ onCapture, title }: TextPromptProps) => {
+export default function TextPrompt({ onCapture, title }: TextPromptProps) {
 	const [caption, setCaption] = useState('');
 	return (
 		<div className="flex flex-col">
@@ -24,4 +24,4 @@ export const TextPrompt = ({ onCapture, title }: TextPromptProps) => {
 			/>
 		</div>
 	);
-};
+}

@@ -1,6 +1,6 @@
 import { useActorRef, useSelector } from './components/MachineProvider.js';
 import { createDotSeparatedString } from './utils.js';
-import { TextPrompt } from './components/CaptureCaption.js';
+import TextPrompt from './components/TextPrompt.js';
 import { LoadingIndicator } from './components/LoadingIndicator.js';
 
 export function App() {

@@ -76,6 +76,12 @@ interface OpenAIResponse {
 	}>;
 }
 
+const defaultSystemMessages = [
+	'Be as funny as possible. Lean into puns and wordplay.',
+	'Make sure to never use curse words or offensive language.',
+	'Do not repeat back anything I said to you.',
+];
+
 async function openAIRequest(systemMessage: string, userMessage: string) {
 	const response = await fetch('https://api.openai.com/v1/chat/completions', {
 		method: 'POST',
@@ -87,7 +93,7 @@ async function openAIRequest(systemMessage: string, userMessage: string) {
 			stream: false,
 			messages: [
 				{
-					content: systemMessage,
+					content: [systemMessage, ...defaultSystemMessages].join(' '),
 					role: 'system',
 				},
 				{
@@ -120,7 +126,7 @@ async function openAIRequest(systemMessage: string, userMessage: string) {
  */
 export async function getClue(name: string, delay = 0): Promise<string> {
 	const systemMessage =
-		'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Respond with only the text. Do not label it as a haiku or limerick. Make sure to never use curse words or offensive language.';
+		'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Respond with only the text. Do not label it as a haiku or limerick.';
 
 	const json = await openAIRequest(systemMessage, name);
 
@@ -140,7 +146,7 @@ export interface CaptionRequest {
 
 export async function getCaptions(captionRequest: CaptionRequest, delay = 0): Promise<string[]> {
 	const systemMessage = `
-		You are a meme text generator. I will give you the name of a meme, a generated limerick or haiku that describes that meme, a text description of what I want the generated meme to be about, and a number of fields that need to be filled out on the meme template. We communicate only via JSON. I will send you these fields with the following interface. If the prompt is a string array, assume that is a description aid for each of the fields. Respond only with an array of strings that match the values, in order, that should be filled in on the template. Do not wrap in markdown syntax. Return only the JSON-compliant text. Do not return anything else. Make sure the response strings match the requested prompt and the meme template as best as possible. Make sure to never use curse words or offensive language.
+		You are a meme text generator. I will give you the name of a meme, a generated limerick or haiku that describes that meme, a text description of what I want the generated meme to be about, and a number of fields that need to be filled out on the meme template. We communicate only via JSON. I will send you these fields with the following interface. If the prompt is a string array, assume that is a description aid for each of the fields. Respond only with an array of strings that match the values, in order, that should be filled in on the template. Do not wrap in markdown syntax. Return only the JSON-compliant text. Do not return anything else. Make sure the response strings match the requested prompt and the meme template as best as possible.
 
 		\`\`\`
 		interface Request {
