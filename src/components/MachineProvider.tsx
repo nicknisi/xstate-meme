@@ -1,44 +1,53 @@
 import { createBrowserInspector } from '@statelyai/inspect';
 import { createActorContext } from '@xstate/react';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
+import { unmountComponentAtNode } from 'react-dom';
 import { InspectionEvent, Observer } from 'xstate';
 import { memeMachine } from '../memeMachine.js';
 
-const inspector = createBrowserInspector({
-	url: 'https://stately.ai/registry/inspect',
-	iframe: document.getElementById('inspector-iframe') as HTMLIFrameElement,
-});
-
-const inspect = inspector.inspect as Observer<InspectionEvent>;
-
-const MemeMachineContext = createActorContext(memeMachine, { inspect });
+const MemeMachineContext = createActorContext(memeMachine);
 
 export const MemeMachineProvider = MemeMachineContext.Provider;
 
 export const useActorRef = MemeMachineContext.useActorRef;
 export const useSelector = MemeMachineContext.useSelector;
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export function MachineProvider({ children, inspect: shouldInspect }: { children: ReactNode; inspect?: boolean }) {
 	const ref = useRef<HTMLIFrameElement | null>(null);
 	const [inspect, setInspect] = useState<Observer<InspectionEvent> | undefined>(undefined);
 
-	useEffect(() => {
-		if (ref.current) {
-			const { inspect } = createBrowserInspector({
-				url: 'https://stately.ai/registry/inspect',
-				iframe: ref.current,
-			});
-
-			setInspect(inspect as Observer<InspectionEvent>);
-		}
-	}, [ref.current, shouldInspect, setInspect]);
-
 	return (
-		<div className="flex gap-1">
-			<div>
-				<MemeMachineProvider options={{ inspect }}>{children}</MemeMachineProvider>
+		<div className="flex h-full w-full gap-1">
+			<div className="flex-none">
+				{(!shouldInspect || (ref.current && inspect)) && (
+					<MemeMachineProvider options={{ inspect }}>{children}</MemeMachineProvider>
+				)}
 			</div>
-			{shouldInspect && <iframe ref={ref} id="inspector-iframe" className="h-full w-full" />}
+			{shouldInspect && (
+				<iframe
+					ref={iframe => {
+						if (!iframe || !iframe.parentElement || ref.current) return;
+						ref.current = iframe;
+						iframe.parentElement.childNodes.forEach(node => {
+							if (node !== iframe) {
+								unmountComponentAtNode(node as Element);
+							}
+						});
+						const inspector = createBrowserInspector({
+							iframe,
+							url: 'https://stately.ai/registry/inspect',
+							autoStart: false,
+						});
+						setInspect(inspector.inspect as Observer<InspectionEvent>);
+						// FIXME: is this really necessary?
+						sleep(1000).then(() => inspector.start());
+					}}
+					id="inspector-iframe"
+					className="h-full w-full flex-none"
+				/>
+			)}
 		</div>
 	);
 }

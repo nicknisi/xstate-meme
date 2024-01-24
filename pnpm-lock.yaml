@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@statelyai/inspect':
-    specifier: ^0.2.1
+    specifier: 0.2.1
     version: 0.2.1(ws@8.16.0)(xstate@5.5.2)
   '@xstate/react':
     specifier: 4.0.3
