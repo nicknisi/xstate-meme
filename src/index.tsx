@@ -7,11 +7,9 @@ import './index.css';
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-	<StrictMode>
-		<Suspense fallback={'Loading...'}>
-			<MachineProvider inspect>
-				<App />
-			</MachineProvider>
-		</Suspense>
-	</StrictMode>,
+	<Suspense fallback={'Loading...'}>
+		<MachineProvider inspect>
+			<App />
+		</MachineProvider>
+	</Suspense>,
 );

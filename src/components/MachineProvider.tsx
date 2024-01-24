@@ -7,12 +7,7 @@ import { memeMachine } from '../memeMachine.js';
 
 const MemeMachineContext = createActorContext(memeMachine);
 
-export const MemeMachineProvider = MemeMachineContext.Provider;
-
-export const useActorRef = MemeMachineContext.useActorRef;
-export const useSelector = MemeMachineContext.useSelector;
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const MemeMachineProvider = MemeMachineContext.Provider;
 
 export function MachineProvider({ children, inspect: shouldInspect }: { children: ReactNode; inspect?: boolean }) {
 	const ref = useRef<HTMLIFrameElement | null>(null);
@@ -38,18 +33,17 @@ export function MachineProvider({ children, inspect: shouldInspect }: { children
 						const inspector = createBrowserInspector({
 							iframe,
 							url: 'https://stately.ai/registry/inspect',
-							autoStart: false,
 						});
 						setInspect(inspector.inspect as Observer<InspectionEvent>);
-						// FIXME: is this really necessary?
-						sleep(1000).then(() => inspector.start());
 					}}
 					id="inspector-iframe"
-					className="h-full w-full flex-none"
+					className="h-full w-full max-w-[50%] flex-none"
 				/>
 			)}
 		</div>
 	);
 }
 
+export const useActorRef = MemeMachineContext.useActorRef;
+export const useSelector = MemeMachineContext.useSelector;
 export default MachineProvider;
