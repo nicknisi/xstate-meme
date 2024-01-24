@@ -13,7 +13,7 @@ export function App() {
 	console.log(state);
 	return (
 		<div className="relative h-full">
-			{state !== 'done' && state !== 'enterCaptions.enterCaption' && (
+			{state !== 'done' && (
 				<h1 className="mt-8 w-[100%] text-center font-bebas text-[9em] shadow-blue-400 text-shadow-lg">XState-meme</h1>
 			)}
 			{loading && <LoadingIndicator state={state} />}
