@@ -76,14 +76,7 @@ interface OpenAIResponse {
 	}>;
 }
 
-/**
- * Given the name of a meme, use OpenAI to generate a clue about what the meme is.
- * @param name - The name of the meme
- */
-export async function getClue(name: string, delay = 0): Promise<string> {
-	const systemMessage =
-		'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Respond with only the text. Do not label it as a haiku or limerick.';
-
+async function openAIRequest(systemMessage: string, userMessage: string) {
 	const response = await fetch('https://api.openai.com/v1/chat/completions', {
 		method: 'POST',
 		headers: {
@@ -98,7 +91,7 @@ export async function getClue(name: string, delay = 0): Promise<string> {
 					role: 'system',
 				},
 				{
-					content: name,
+					content: userMessage,
 					role: 'user',
 				},
 			],
@@ -115,10 +108,61 @@ export async function getClue(name: string, delay = 0): Promise<string> {
 		throw new Error('Failed to generate clue');
 	}
 
+	const json = (await response.json()) as OpenAIResponse;
+
+	return json;
+}
+
+/**
+ * Given the name of a meme, use OpenAI to generate a clue about what the meme is.
+ * @param memeName - The name of the meme
+ * @param delay - Delay in milliseconds, for dramatic effect
+ */
+export async function getClue(name: string, delay = 0): Promise<string> {
+	const systemMessage =
+		'You are a clue generator for a guessing game. Given the name of a popular meme, come up with a fun yet difficult to guess clue about the meme in the form of either a haiku or a limerick. Respond with only the text. Do not label it as a haiku or limerick.';
+
+	const json = await openAIRequest(systemMessage, name);
+
 	if (delay) {
 		await sleep(delay);
 	}
 
-	const json = (await response.json()) as OpenAIResponse;
 	return json.choices?.[0]?.message?.content ?? 'Clue not found.';
+}
+
+export interface CaptionRequest {
+	name: string;
+	description: string;
+	fields: number;
+	prompt: string | string[];
+}
+
+export async function getCaptions(captionRequest: CaptionRequest, delay = 0): Promise<string[]> {
+	const systemMessage = `
+		You are a meme text generator. I will give you the name of a meme, a generated limerick or haiku that describes that meme, a text description of what I want the generated meme to be about, and a number of fields that need to be filled out on the meme template. We communicate only via JSON. I will send you these fields with the following interface. If the prompt is a string array, assume that is a description aid for each of the fields. Respond only with an array of strings that match the values, in order, that should be filled in on the template. Do not wrap in markdown syntax. Return only the JSON-compliant text. Do not return anything else. Make sure the response strings match the requested prompt and the meme template as best as possible.
+
+		\`\`\`
+		interface Request {
+			name: string;
+			description: string;
+			fields: number;
+			prompt: string | string[];
+		}
+		\`\`\``.trim();
+
+	const json = await openAIRequest(systemMessage, JSON.stringify(captionRequest));
+	const content = json.choices?.[0]?.message?.content;
+	let captions: string[] = [];
+	try {
+		captions = JSON.parse(content);
+	} catch {
+		console.error('Failed to parse JSON response from OpenAI');
+	}
+
+	if (delay) {
+		await sleep(delay);
+	}
+
+	return captions;
 }
