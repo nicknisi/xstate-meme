@@ -1,6 +1,6 @@
 import { useActorRef, useSelector } from './components/MachineProvider.js';
 import { createDotSeparatedString } from './utils.js';
-import { CaptureCaption } from './components/CaptureCaption.js';
+import { TextPrompt } from './components/CaptureCaption.js';
 import { LoadingIndicator } from './components/LoadingIndicator.js';
 
 export function App() {
@@ -10,6 +10,7 @@ export function App() {
 	const image = useSelector(state => state.context.generatedMemeUrl);
 	const loading = useSelector(state => state.tags.has('loading'));
 	const clue = useSelector(state => state.context.clue);
+	const captionTotal = useSelector(state => state.context.selectedMeme?.box_count ?? 0);
 	console.log(state);
 	return (
 		<div className="relative h-full">
@@ -36,19 +37,36 @@ export function App() {
 					<div className="text-center">
 						<p className="p-3 text-2xl">Your Clue:</p>
 						<p className="whitespace-pre p-3 text-5xl">{clue}</p>
-						<button
-							type="button"
-							className="rounded-lg border border-white p-3 text-lg"
-							onClick={() => send({ type: 'NEXT' })}
-						>
-							NEXT
-						</button>
+						<div className="flex justify-center gap-2">
+							<button
+								type="button"
+								className="rounded-lg border border-white p-3 text-lg"
+								onClick={() => send({ type: 'ENTER_CAPTIONS' })}
+							>
+								ADD CAPTIONS
+							</button>
+							<button
+								type="button"
+								className="rounded-lg border border-white p-3 text-lg"
+								onClick={() => send({ type: 'ENTER_PROMPT' })}
+							>
+								ENTER PROMPT
+							</button>
+						</div>
 					</div>
+				</>
+			)}
+			{state === 'enterPrompt.initial' && (
+				<>
+					<TextPrompt title="Enter Prompt" onCapture={value => send({ type: 'ADD_PROMPT', value })} />
 				</>
 			)}
 			{state === 'enterCaptions.enterCaption' && (
 				<>
-					<CaptureCaption captionNumber={captionCount + 1} onCapture={value => send({ type: 'ADD_CAPTION', value })} />
+					<TextPrompt
+						title={`Caption ${captionCount + 1} / ${captionTotal} `}
+						onCapture={value => send({ type: 'ADD_CAPTION', value })}
+					/>
 				</>
 			)}
 			{state === 'done' && image && <img src={image} alt="generated meme" className="h-full w-full object-contain" />}

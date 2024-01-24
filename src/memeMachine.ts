@@ -1,5 +1,5 @@
 import { assign, createMachine, fromPromise } from 'xstate';
-import { Meme, captionMeme, fetchMemes, getClue } from './api.js';
+import { CaptionRequest, Meme, captionMeme, fetchMemes, getCaptions, getClue } from './api.js';
 
 export interface MemeMachineContext {
 	memes: Meme[];
@@ -7,9 +7,12 @@ export interface MemeMachineContext {
 	captions: string[];
 	clue: string | null;
 	generatedMemeUrl: string | null;
+	prompt: string | null;
 }
 
-export type MemeMachineEvent = { type: 'ADD_CAPTION'; value: string } | { type: 'NEXT' };
+export type MemeMachineEvent =
+	| { type: 'ADD_CAPTION' | 'ADD_PROMPT'; value: string }
+	| { type: 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' };
 
 export const memeMachine = createMachine(
 	{
@@ -24,6 +27,7 @@ export const memeMachine = createMachine(
 			captions: [],
 			clue: null,
 			generatedMemeUrl: null,
+			prompt: null,
 		},
 		initial: 'initial',
 		states: {
@@ -67,9 +71,49 @@ export const memeMachine = createMachine(
 			},
 			showClue: {
 				on: {
-					NEXT: {
+					ENTER_CAPTIONS: {
 						target: 'enterCaptions',
 					},
+					ENTER_PROMPT: { target: 'enterPrompt' },
+				},
+			},
+			enterPrompt: {
+				initial: 'initial',
+				onDone: {
+					target: 'generateMeme',
+				},
+				states: {
+					initial: {
+						on: {
+							ADD_PROMPT: {
+								actions: assign({
+									prompt: ({ event }) => event.value,
+								}),
+								target: 'generateCaptions',
+							},
+						},
+					},
+					generateCaptions: {
+						tags: ['loading'],
+						invoke: {
+							id: 'generateCaptions',
+							src: 'generateCaptions',
+							input: ({ context: { selectedMeme, prompt, clue } }) =>
+								({
+									name: selectedMeme?.name ?? '',
+									fields: selectedMeme?.box_count ?? 0,
+									prompt: prompt ?? '',
+									description: clue ?? '',
+								}) satisfies CaptionRequest,
+							onDone: {
+								target: 'done',
+								actions: assign({
+									captions: ({ event }) => event.output,
+								}),
+							},
+						},
+					},
+					done: { type: 'final' },
 				},
 			},
 			enterCaptions: {
@@ -128,6 +172,19 @@ export const memeMachine = createMachine(
 			generateMeme: fromPromise(
 				async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) =>
 					captionMeme(selectedMeme!.id, captions, 2000),
+			),
+			generateCaptions: fromPromise(
+				({
+					input: { name, fields, prompt, description },
+				}: {
+					input: { description: string; name: string; fields: number; prompt: string; clue: string };
+				}) =>
+					getCaptions({
+						name,
+						description,
+						fields,
+						prompt,
+					}),
 			),
 			getClue: fromPromise(({ input }: { input: { selectedMeme: Meme } }) => getClue(input.selectedMeme.name, 2000)),
 		},
