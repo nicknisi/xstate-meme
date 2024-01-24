@@ -4,6 +4,7 @@ import { ReactNode, useRef, useState } from 'react';
 import { unmountComponentAtNode } from 'react-dom';
 import { InspectionEvent, Observer } from 'xstate';
 import { memeMachine } from '../memeMachine.js';
+import { cn } from '../utils.js';
 
 const MemeMachineContext = createActorContext(memeMachine);
 
@@ -14,8 +15,8 @@ export function MachineProvider({ children, inspect: shouldInspect }: { children
 	const [inspect, setInspect] = useState<Observer<InspectionEvent> | undefined>(undefined);
 
 	return (
-		<div className="flex h-full w-full gap-1">
-			<div className="flex-none">
+		<div className={cn('grid h-full w-full grid-rows-1 gap-0', shouldInspect ? 'grid-cols-2' : 'grid-cols-1')}>
+			<div className="">
 				{(!shouldInspect || (ref.current && inspect)) && (
 					<MemeMachineProvider options={{ inspect }}>{children}</MemeMachineProvider>
 				)}
@@ -37,7 +38,7 @@ export function MachineProvider({ children, inspect: shouldInspect }: { children
 						setInspect(inspector.inspect as Observer<InspectionEvent>);
 					}}
 					id="inspector-iframe"
-					className="h-full w-full max-w-[50%] flex-none"
+					className="h-full w-full"
 				/>
 			)}
 		</div>

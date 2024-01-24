@@ -1,7 +1,6 @@
 import { useActorRef, useSelector } from './components/MachineProvider.js';
 import { createDotSeparatedString } from './utils.js';
 import { CaptureCaption } from './components/CaptureCaption.js';
-import { Centered } from './components/Centered.js';
 import { LoadingIndicator } from './components/LoadingIndicator.js';
 
 export function App() {
@@ -13,15 +12,13 @@ export function App() {
 	const clue = useSelector(state => state.context.clue);
 	console.log(state);
 	return (
-		<div className="relative">
+		<div className="relative h-full">
 			{state !== 'done' && state !== 'enterCaptions.enterCaption' && (
-				<h1 className="fixed mt-8 w-[100%] text-center font-theramin text-[9em] shadow-blue-400 text-shadow-lg">
-					Meme Quest
-				</h1>
+				<h1 className="mt-8 w-[100%] text-center font-bebas text-[9em] shadow-blue-400 text-shadow-lg">XState-meme</h1>
 			)}
 			{loading && <LoadingIndicator state={state} />}
 			{state === 'initial' && (
-				<Centered>
+				<>
 					<div className="text-center">
 						<p className="p-3 text-2xl">Welcome to Meme Quest! Press the button below to get started.</p>
 						<button
@@ -32,10 +29,10 @@ export function App() {
 							START
 						</button>
 					</div>
-				</Centered>
+				</>
 			)}
 			{state === 'showClue' && (
-				<Centered>
+				<>
 					<div className="text-center">
 						<p className="p-3 text-2xl">Your Clue:</p>
 						<p className="whitespace-pre p-3 text-5xl">{clue}</p>
@@ -47,18 +44,14 @@ export function App() {
 							NEXT
 						</button>
 					</div>
-				</Centered>
+				</>
 			)}
 			{state === 'enterCaptions.enterCaption' && (
-				<Centered>
+				<>
 					<CaptureCaption captionNumber={captionCount + 1} onCapture={value => send({ type: 'ADD_CAPTION', value })} />
-				</Centered>
+				</>
 			)}
-			{state === 'done' && image && (
-				<div>
-					<img src={image} alt="generated meme" className="h-full w-full" />
-				</div>
-			)}
+			{state === 'done' && image && <img src={image} alt="generated meme" className="h-full w-full object-contain" />}
 		</div>
 	);
 }

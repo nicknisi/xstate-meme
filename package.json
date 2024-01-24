@@ -16,11 +16,14 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
+		"@fontsource/atkinson-hyperlegible": "^5.0.18",
+		"@fontsource/bebas-neue": "^5.0.18",
 		"@statelyai/inspect": "0.2.1",
 		"@xstate/react": "4.0.3",
 		"clsx": "2.1.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"tailwind-merge": "^2.2.1",
 		"xstate": "5.5.2"
 	},
 	"devDependencies": {

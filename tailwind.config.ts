@@ -5,6 +5,20 @@ const config: Config = {
 	content: ['index.html', 'src/**/*{.tsx,.ts}'],
 	theme: {
 		extend: {
+			colors: {
+				gray: {
+					50: '#F9FAFB',
+					100: '#E3E3E5',
+					200: '#C7C7CB',
+					300: '#ABABB1',
+					400: '#8F8F97',
+					500: '#74747E',
+					600: '#585864',
+					700: '#3C3C4A',
+					800: '#202030',
+					900: '#050517',
+				},
+			},
 			animation: {
 				'spin-slow': 'spin 3s linear infinite',
 			},
@@ -20,7 +34,9 @@ const config: Config = {
 				lg: '0 8px 16px var(--tw-shadow-color)',
 			},
 			fontFamily: {
+				sans: ['Atkinson Hyperlegible', 'sans-serif'],
 				theramin: ['SF Theramin Gothic'],
+				bebas: ['Bebas Neue'],
 			},
 		},
 	},

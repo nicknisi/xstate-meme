@@ -1,4 +1,6 @@
-import { StrictMode, Suspense } from 'react';
+import '@fontsource/bebas-neue';
+import '@fontsource/atkinson-hyperlegible';
+import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.js';
 import { MachineProvider } from './components/MachineProvider.js';

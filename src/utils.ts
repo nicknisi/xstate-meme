@@ -1,4 +1,13 @@
 import type { EventObject, ExtractEvent } from 'xstate';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
+
+/**
+ * Generate a list of css classes, merged.
+ */
+export function cn(...args: Parameters<typeof clsx>): string {
+	return twMerge(clsx(...args));
+}
 
 /**
  * Assert that the event object passed in is of the type specified in the second argument.
