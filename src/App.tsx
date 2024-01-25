@@ -41,6 +41,13 @@ export function App() {
 							<button
 								type="button"
 								className="rounded-lg border border-white p-3 text-lg"
+								onClick={() => send({ type: 'RETRY' })}
+							>
+								RETRY
+							</button>
+							<button
+								type="button"
+								className="rounded-lg border border-white p-3 text-lg"
 								onClick={() => send({ type: 'ENTER_CAPTIONS' })}
 							>
 								ADD CAPTIONS

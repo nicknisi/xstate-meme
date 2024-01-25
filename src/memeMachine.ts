@@ -12,7 +12,7 @@ export interface MemeMachineContext {
 
 export type MemeMachineEvent =
 	| { type: 'ADD_CAPTION' | 'ADD_PROMPT'; value: string }
-	| { type: 'START' | 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' };
+	| { type: 'START' | 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' | 'RETRY' };
 
 export const memeMachine = createMachine(
 	{
@@ -69,6 +69,7 @@ export const memeMachine = createMachine(
 			},
 			showClue: {
 				on: {
+					RETRY: 'selectMeme',
 					ENTER_CAPTIONS: {
 						target: 'enterCaptions',
 					},
