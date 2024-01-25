@@ -23,5 +23,15 @@ module.exports = {
 		name: '@storybook/react-vite',
 		options: {},
 	},
+	previewHead: head => `
+		${head}
+		<style>
+			#storybook-root {
+				height: 100%;
+				width: 100%;
+				margin: 0 auto;
+			}
+		</style>
+	`,
 	staticDirs: ['../public'],
 };
