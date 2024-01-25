@@ -12,7 +12,7 @@ export interface MemeMachineContext {
 
 export type MemeMachineEvent =
 	| { type: 'ADD_CAPTION' | 'ADD_PROMPT'; value: string }
-	| { type: 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' };
+	| { type: 'START' | 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' };
 
 export const memeMachine = createMachine(
 	{
@@ -32,9 +32,7 @@ export const memeMachine = createMachine(
 		initial: 'initial',
 		states: {
 			initial: {
-				// always: 'loadMemes',
-				on: { NEXT: 'loadMemes' },
-				entry: () => console.log('initial'),
+				on: { START: 'loadMemes' },
 			},
 			loadMemes: {
 				tags: ['loading'],

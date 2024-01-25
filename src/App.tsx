@@ -25,7 +25,7 @@ export function App() {
 						<button
 							type="button"
 							className="rounded-lg border border-white p-3 text-lg"
-							onClick={() => send({ type: 'NEXT' })}
+							onClick={() => send({ type: 'START' })}
 						>
 							START
 						</button>
