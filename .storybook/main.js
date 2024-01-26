@@ -1,5 +1,5 @@
-const { mergeConfig } = require('vite');
-module.exports = {
+import { mergeConfig } from 'vite';
+export default {
 	async viteFinal(config, { configType }) {
 		// return the customized config
 		return mergeConfig(config, {
