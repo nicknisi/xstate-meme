@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import RenderMachine from '../storybook/RenderMachine.js';
-import { memeClueMachine } from './memeClueMachine';
+import { memeClueMachine } from './clueMemeMachine';
 
 const meta: Meta = {
-	title: 'Meme Machine',
+	title: 'Clue Meme Machine',
 };
 
 export default meta;

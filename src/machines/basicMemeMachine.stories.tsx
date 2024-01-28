@@ -3,7 +3,7 @@ import RenderMachine from '../storybook/RenderMachine.js';
 import memeMachine from './basicMemeMachine';
 
 const meta: Meta = {
-	title: 'Meme Machine',
+	title: 'Basic Meme Machine',
 };
 
 export default meta;
