@@ -3,7 +3,7 @@ import { createActorContext } from '@xstate/react';
 import { ReactNode, useRef, useState } from 'react';
 import { unmountComponentAtNode } from 'react-dom';
 import { InspectionEvent, Observer } from 'xstate';
-import memeMachine from '../machines/basicMemeMachine.js';
+import memeMachine from '../machines/memeMachine.js';
 import { cn } from '../utils.js';
 
 const MemeMachineContext = createActorContext(memeMachine);
