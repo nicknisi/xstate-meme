@@ -3,14 +3,19 @@ import { createDotSeparatedString } from './utils.js';
 import TextPrompt from './components/TextPrompt.js';
 import { LoadingIndicator } from './components/LoadingIndicator.js';
 
+const useIsEventAvailable = (eventName: string) => useSelector(state => state.can({ type: eventName } as any));
+
 export function App() {
-	const { send } = useActorRef();
+	const { send: sendEvent } = useActorRef();
+	const send = (event: any) => sendEvent(event);
 	const state = useSelector(state => createDotSeparatedString(state.value));
 	const captionCount = useSelector(state => state.context.captions.length);
 	const image = useSelector(state => state.context.generatedMemeUrl);
 	const loading = useSelector(state => state.tags.has('loading'));
 	const clue = useSelector(state => state.context.clue);
 	const captionTotal = useSelector(state => state.context.selectedMeme?.box_count ?? 0);
+	const canRetry = useIsEventAvailable('RETRY');
+	const canPrompt = useIsEventAvailable('ENTER_PROMPT');
 	console.log(state);
 	return (
 		<div className="relative h-full">
@@ -38,13 +43,15 @@ export function App() {
 						<p className="p-3 text-2xl">Your Clue:</p>
 						<p className="whitespace-pre p-3 text-5xl">{clue}</p>
 						<div className="flex justify-center gap-2">
-							<button
-								type="button"
-								className="rounded-lg border border-white p-3 text-lg"
-								onClick={() => send({ type: 'RETRY' })}
-							>
-								RETRY
-							</button>
+							{canRetry && (
+								<button
+									type="button"
+									className="rounded-lg border border-white p-3 text-lg"
+									onClick={() => send({ type: 'RETRY' })}
+								>
+									RETRY
+								</button>
+							)}
 							<button
 								type="button"
 								className="rounded-lg border border-white p-3 text-lg"
@@ -52,13 +59,15 @@ export function App() {
 							>
 								ADD CAPTIONS
 							</button>
-							<button
-								type="button"
-								className="rounded-lg border border-white p-3 text-lg"
-								onClick={() => send({ type: 'ENTER_PROMPT' })}
-							>
-								ENTER PROMPT
-							</button>
+							{canPrompt && (
+								<button
+									type="button"
+									className="rounded-lg border border-white p-3 text-lg"
+									onClick={() => send({ type: 'ENTER_PROMPT' })}
+								>
+									ENTER PROMPT
+								</button>
+							)}
 						</div>
 					</div>
 				</>
