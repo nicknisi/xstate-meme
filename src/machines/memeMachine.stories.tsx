@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import RenderMachine from './storybook/RenderMachine.js';
+import RenderMachine from '../storybook/RenderMachine.js';
 import { memeMachine } from './memeMachine';
 
 const meta: Meta = {
