@@ -14,6 +14,15 @@ export type MemeMachineEvent =
 	| { type: 'ADD_CAPTION' | 'ADD_PROMPT'; value: string }
 	| { type: 'START' | 'NEXT' | 'ENTER_PROMPT' | 'ENTER_CAPTIONS' | 'RETRY' };
 
+/**
+ * This is the final meme machine that:
+ * - Fetches memes
+ * - Selects a meme at random
+ * - fetches a meme clue
+ * - waits for event to either retry, caption meme, or prompt for caption
+ * - Prompts for captions and captions the meme
+ * - displays the meme
+ */
 export const memeMachine = createMachine(
 	{
 		types: {} as {
@@ -189,3 +198,5 @@ export const memeMachine = createMachine(
 		},
 	},
 );
+
+export default memeMachine;
