@@ -167,7 +167,7 @@ export const memeMachine = createMachine(
 			needsMoreCaptions: ({ context: { selectedMeme, captions } }) => selectedMeme!.box_count > captions.length,
 		},
 		actors: {
-			fetchMemes: fromPromise(() => fetchMemes(2000)),
+			fetchMemes: fromPromise(() => fetchMemes()),
 			generateMeme: fromPromise(
 				async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) =>
 					captionMeme(selectedMeme!.id, captions, 2000),
