@@ -16,7 +16,6 @@ export function App() {
 	const captionTotal = useSelector(state => state.context.selectedMeme?.box_count ?? 0);
 	const canRetry = useIsEventAvailable('RETRY');
 	const canPrompt = useIsEventAvailable('ENTER_PROMPT');
-	console.log(state);
 	return (
 		<div className="relative h-full">
 			{state !== 'done' && (

@@ -1,5 +1,5 @@
 import { assign, createMachine, fromPromise } from 'xstate';
-import { Meme, captionMeme, fetchMemes } from '../api.js';
+import { Meme, captionMeme, fetchMemes, getCaptions, getClue } from '../api.js';
 
 export interface MemeMachineContext {
 	memes: Meme[];
@@ -106,36 +106,25 @@ export const basicMemeMachine = createMachine(
 			needsMoreCaptions: ({ context: { selectedMeme, captions } }) => selectedMeme!.box_count > captions.length,
 		},
 		actors: {
-			fetchMemes: fromPromise(async () => {
-				const API_BASE_URL = 'https://api.imgflip.com';
-				const response = await fetch(`${API_BASE_URL}/get_memes`);
-				const json = await response.json();
-				return json.data.memes;
-			}),
+			fetchMemes: fromPromise(() => fetchMemes()),
 			generateMeme: fromPromise(
-				async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) => {
-					const API_BASE_URL = 'https://api.imgflip.com';
-					const USERNAME = 'nicknisi';
-					const PASSWORD = 'nkr3XMG!dbq_uxa8jwc';
-					const body = new FormData();
-					body.append('template_id', selectedMeme!.id);
-					body.append('username', USERNAME);
-					body.append('password', PASSWORD);
-
-					captions.forEach((text, i) => {
-						body.append(`boxes[${i}][text]`, text.toUpperCase());
-						body.append(`boxes[${i}][color]`, '#ffffff');
-						body.append(`boxes[${i}][outline_color]`, '#000000');
-					});
-
-					const response = await fetch(`${API_BASE_URL}/caption_image`, {
-						method: 'POST',
-						body,
-					});
-					const json = await response.json();
-					return json.data.url;
-				},
+				async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) =>
+					captionMeme(selectedMeme!.id, captions, 2000),
 			),
+			generateCaptions: fromPromise(
+				({
+					input: { name, fields, prompt, description },
+				}: {
+					input: { description: string; name: string; fields: number; prompt: string; clue: string };
+				}) =>
+					getCaptions({
+						name,
+						description,
+						fields,
+						prompt,
+					}),
+			),
+			getClue: fromPromise(({ input }: { input: { selectedMeme: Meme } }) => getClue(input.selectedMeme.name, 2000)),
 		},
 	},
 );

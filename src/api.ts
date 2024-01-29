@@ -80,6 +80,8 @@ const defaultSystemMessages = [
 	'Be as funny as possible. Lean into puns and wordplay.',
 	'Make sure to never use curse words or offensive language.',
 	'Do not repeat back anything I said to you.',
+	'Seriously, be funny. This is a game. Make it fun.',
+	'Even more seriously, don’t be offensive. This is a game. Make it fun for everyone.',
 ];
 
 async function openAIRequest(systemMessage: string, userMessage: string) {
