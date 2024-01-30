@@ -6,6 +6,7 @@ This project started its life as an example for [Nick Taylor's](https://nickyt.l
 
 All resources can be found [here](https://nicknisi.com/talks/componentizing-application-state/)
 
+![8e2sop](https://github.com/nicknisi/xstate-meme/assets/293805/193607a7-50a8-4a47-b189-f20b0f4888bb)
 
 Special thanks to the [THAT Conference team](https://thatconference.com) for the opportunity to speak!
 
