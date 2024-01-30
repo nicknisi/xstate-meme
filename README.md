@@ -1,6 +1,13 @@
 # XState Meme
 
-This project started its life as an example for [Nick Taylor's](https://nickyt.live) Twitch [stream](https://www.youtube.com/watch?v=F8EGZCcEOn8) and was adapted to be the primary example for my talk, [Componentizing Application State](https://nicknisi.github.io/xstate-meme/) at [KCDC](https://kcdc.info).
+This project started its life as an example for [Nick Taylor's](https://nickyt.live) Twitch [stream](https://www.youtube.com/watch?v=F8EGZCcEOn8) and was adapted to be the primary example for my talk, [Componentizing Application State](https://nicknisi.github.io/xstate-meme/) at [KCDC](https://kcdc.info). The latest iteration of this talk covers [XState 5]() and was presented at [THAT Conference (Texas) 2024](https://thatconference.com).
+
+## THAT Conference (Texas) 2024 - Componentizing Application State
+
+All resources can be found [here](https://nicknisi.com/talks/componentizing-application-state/)
+
+
+Special thanks to the [THAT Conference team](https://thatconference.com) for the opportunity to speak!
 
 ## KCDC 2023 Talk - Componentizing Application State
 
