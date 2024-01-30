@@ -109,7 +109,7 @@ export const basicMemeMachine = createMachine(
 			fetchMemes: fromPromise(() => fetchMemes()),
 			generateMeme: fromPromise(
 				async ({ input: { selectedMeme, captions } }: { input: { selectedMeme: Meme; captions: string[] } }) =>
-					captionMeme(selectedMeme!.id, captions, 2000),
+					captionMeme(selectedMeme!.id, captions),
 			),
 			generateCaptions: fromPromise(
 				({
@@ -124,7 +124,7 @@ export const basicMemeMachine = createMachine(
 						prompt,
 					}),
 			),
-			getClue: fromPromise(({ input }: { input: { selectedMeme: Meme } }) => getClue(input.selectedMeme.name, 2000)),
+			getClue: fromPromise(({ input }: { input: { selectedMeme: Meme } }) => getClue(input.selectedMeme.name)),
 		},
 	},
 );
